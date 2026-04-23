@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Argamassa Global</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root {
+  --g: #00C57A; --g2: #00916B; --g3: #d4f7ea;
+  --r: #e05252; --r2: #fce8e8;
+  --bg: #1a1f1d; --bg2: #202624; --bg3: #252c28; --bg4: #2c342f;
+  --border: rgba(0,197,122,0.18); --border2: rgba(255,255,255,0.09);
+  --text: #eef3f0; --text2: #a8bdb4; --text3: #5e7a6e;
+  --warn: #f5a623; --sidebar: 230px; --topbar: 52px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;min-height:100vh;display:flex;flex-direction:column}
+
+/* TOPBAR */
+#topbar{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  height:var(--topbar);
+  background:#1a1f1d;
+  border-bottom:0.5px solid var(--border2);
+  display:flex;align-items:center;padding:0 16px;gap:12px;
+}
+#menu-toggle{
+  width:32px;height:32px;border-radius:8px;border:0.5px solid var(--border2);
+  background:var(--bg3);cursor:pointer;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:4px;flex-shrink:0;transition:.2s;
+}
+#menu-toggle span{display:block;width:14px;height:1.5px;background:var(--text2);border-radius:2px;transition:.25s}
+#menu-toggle.open span:nth-child(1){transform:translateY(5.5px) rotate(45deg)}
+#menu-toggle.open span:nth-child(2){opacity:0}
+#menu-toggle.open span:nth-child(3){transform:translateY(-5.5px) rotate(-45deg)}
+.topbar-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:14px;color:var(--g);letter-spacing:.06em;display:flex;align-items:center;gap:6px}
+.topbar-logo-dot{width:7px;height:7px;border-radius:50%;background:var(--g);animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.6)}}
+.topbar-title{font-size:12px;color:var(--text3);margin-left:4px;font-weight:400}
+.topbar-sep{width:1px;height:18px;background:var(--border2);margin:0 4px}
+
+/* SIDEBAR */
+#sidebar{
+  position:fixed;top:var(--topbar);left:0;bottom:0;z-index:150;
+  width:var(--sidebar);
+  background:#1a1f1d;
+  border-right:0.5px solid var(--border2);
+  display:flex;flex-direction:column;
+  transform:translateX(0);
+  transition:transform .28s cubic-bezier(.4,0,.2,1);
+  overflow:hidden;
+}
+#sidebar.hidden{transform:translateX(-100%)}
+.sidebar-section{padding:16px 12px 8px;font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;font-weight:500}
+.nav-item{
+  display:flex;align-items:center;gap:10px;padding:9px 14px;margin:1px 8px;
+  border-radius:8px;cursor:pointer;transition:.15s;font-size:13px;color:var(--text2);
+  border:0.5px solid transparent;
+}
+.nav-item:hover{background:var(--bg3);color:var(--text)}
+.nav-item.active{background:rgba(0,197,122,0.12);color:var(--g);border-color:var(--border)}
+.nav-icon{width:16px;height:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nav-badge{margin-left:auto;background:var(--g);color:#000;font-size:9px;font-weight:700;padding:1px 5px;border-radius:4px}
+.sidebar-footer{margin-top:auto;padding:12px 16px;font-size:11px;color:var(--text3);border-top:0.5px solid var(--border2)}
+
+/* OVERLAY */
+#overlay{display:none;position:fixed;inset:0;z-index:140;background:rgba(0,0,0,.45)}
+#overlay.visible{display:block}
+
+/* MAIN */
+#main{
+  margin-top:var(--topbar);
+  margin-left:var(--sidebar);
+  transition:margin-left .28s cubic-bezier(.4,0,.2,1);
+  min-height:calc(100vh - var(--topbar));
+  flex:1;
+}
+#main.full{margin-left:0}
+.page{display:none;padding:28px 28px 48px}
+.page.active{display:block}
+
+/* HERO BAND */
+.hero-band{
+  border:0.5px solid var(--border2);border-radius:12px;
+  padding:20px 24px;margin-bottom:24px;
+  background:var(--bg3);position:relative;overflow:hidden;
+}
+.hero-band::after{content:'';position:absolute;top:-60px;right:-60px;width:250px;height:250px;background:radial-gradient(circle,rgba(0,197,122,.06) 0%,transparent 70%);pointer-events:none}
+.hero-eyebrow{font-size:10px;color:var(--g);letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px;font-family:'DM Mono',monospace}
+.hero-band h1{font-family:'Syne',sans-serif;font-size:clamp(18px,3vw,26px);font-weight:800;letter-spacing:-.02em;line-height:1.15;margin-bottom:4px}
+.hero-band h1 span{color:var(--g)}
+.hero-sub{font-size:12px;color:var(--text2);max-width:560px}
+
+/* SEC TITLE */
+.sec{font-size:10px;font-weight:600;color:var(--g);letter-spacing:.14em;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.sec::after{content:'';flex:1;height:.5px;background:var(--border)}
+
+/* GRID */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media(max-width:900px){.g4{grid-template-columns:1fr 1fr}}
+@media(max-width:640px){.g2,.g3,.g4{grid-template-columns:1fr 1fr}#main{margin-left:0!important}#sidebar{transform:translateX(-100%)}#sidebar.mobile-open{transform:translateX(0)}}
+@media(max-width:420px){.g2{grid-template-columns:1fr}.g3,.g4{grid-template-columns:1fr}}
+
+/* CARD */
+.card{background:var(--bg3);border:.5px solid var(--border2);border-radius:12px;padding:16px 18px}
+.card-g{border-color:var(--border)}
+
+/* METRIC */
+.met{background:var(--bg4);border:.5px solid var(--border2);border-radius:8px;padding:10px 12px}
+.met.mg{border-color:rgba(0,197,122,.28)}
+.met.mr{border-color:rgba(224,82,82,.25)}
+.met-lbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
+.met-val{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:var(--text)}
+.met-val.green{color:var(--g)}.met-val.red{color:var(--r)}
+.met-sub{font-size:11px;color:var(--text3);margin-top:2px}
+
+/* SLIDER */
+.sl-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.sl-row label{font-size:12px;color:var(--text2);min-width:130px;flex-shrink:0}
+.sl-row input[type=range]{flex:1;accent-color:var(--g);cursor:pointer}
+.sl-row .v{font-family:'DM Mono',monospace;font-size:12px;color:var(--g);min-width:56px;text-align:right}
+select,input[type=number]{background:var(--bg4);border:.5px solid var(--border2);border-radius:8px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:12px;padding:7px 10px;width:100%;cursor:pointer}
+select:focus,input[type=number]:focus{outline:none;border-color:var(--g)}
+input[type=number]{cursor:text}
+
+/* TIP */
+.tip{font-size:12px;color:var(--text2);background:rgba(0,197,122,.06);border-left:2px solid var(--g);border-radius:0 6px 6px 0;padding:8px 12px;margin-top:10px}
+.tip-r{border-left-color:var(--r);background:rgba(224,82,82,.05)}
+.tip-w{border-left-color:var(--warn);background:rgba(245,166,35,.05)}
+
+/* SAVINGS HERO */
+.sav-hero{background:linear-gradient(135deg,rgba(0,197,122,.08),rgba(0,197,122,.02));border:.5px solid var(--border);border-radius:12px;padding:18px 20px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin-bottom:16px}
+.sav-big{font-family:'Syne',sans-serif;font-size:3rem;font-weight:800;color:var(--g);line-height:1}
+.sav-desc{font-size:13px;color:var(--text2);flex:1;min-width:160px}
+
+/* BAR */
+.bar-wrap{width:100%;margin:0}
+.bar-lbl{font-size:11px;color:var(--text2);margin-bottom:5px;display:flex;justify-content:space-between}
+.bar-track{height:8px;border-radius:99px;background:rgba(224,82,82,.2);overflow:hidden}
+.bar-fill{height:100%;border-radius:99px;background:var(--g);transition:width .5s cubic-bezier(.4,0,.2,1)}
+
+/* BADGE */
+.bdg{display:inline-block;font-size:10px;font-weight:500;padding:2px 7px;border-radius:12px}
+.bdg-g{background:rgba(0,197,122,.14);color:var(--g)}
+.bdg-r{background:rgba(224,82,82,.12);color:#ff8080}
+.bdg-w{background:rgba(245,166,35,.14);color:var(--warn)}
+
+/* TABLE */
+.ctbl{width:100%;border-collapse:collapse}
+.ctbl th{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);font-weight:500;padding:7px 10px;text-align:left;border-bottom:.5px solid var(--border2)}
+.ctbl th.green{color:var(--g)}.ctbl th.red{color:#ff8080}
+.ctbl td{padding:8px 10px;font-size:12px;color:var(--text2);border-bottom:.5px solid rgba(255,255,255,.04)}
+.ctbl td:first-child{color:var(--text3);font-size:11px}
+.ctbl td.tv{color:var(--g);font-weight:500}.ctbl td.rv{color:#ff8080}
+.ctbl tr:last-child td{border-bottom:none}
+
+/* FICHA */
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.fr{display:flex;flex-direction:column;background:var(--bg4);border:.5px solid var(--border2);border-radius:8px;padding:10px 12px}
+.fk{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px}
+.fv{font-family:'DM Mono',monospace;font-size:12px;color:var(--text)}
+
+/* VANTAGEMS */
+.vl{list-style:none;display:flex;flex-direction:column;gap:6px}
+.vl li{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--text2);padding:7px 10px;background:var(--bg4);border:.5px solid var(--border2);border-radius:8px}
+.vl li .ic{flex-shrink:0;margin-top:1px;font-size:13px}
+
+/* CHART */
+.ch-wrap{position:relative;width:100%;height:240px;margin-top:14px}
+.ch-leg{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:6px}
+.ch-leg-i{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2)}
+.ch-dot{width:9px;height:9px;border-radius:2px}
+
+/* FINANCIAL */
+.fin-result{background:linear-gradient(135deg,rgba(0,197,122,.08),rgba(0,197,122,.02));border:.5px solid var(--border);border-radius:12px;padding:18px 20px;margin-bottom:16px}
+.fin-row{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:8px;padding-bottom:8px;border-bottom:.5px solid var(--border2)}
+.fin-row:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.fin-label{font-size:12px;color:var(--text2)}
+.fin-val{font-family:'DM Mono',monospace;font-size:14px;font-weight:500}
+.fin-val.green{color:var(--g)}.fin-val.red{color:var(--r)}.fin-val.warn{color:var(--warn)}
+
+.econ-hero{display:flex;flex-direction:column;align-items:center;text-align:center;padding:16px}
+.econ-num{font-family:'Syne',sans-serif;font-size:2.4rem;font-weight:800;color:var(--g);line-height:1}
+.econ-lbl{font-size:12px;color:var(--text2);margin-top:4px}
+
+/* STEP ITEMS */
+.step-item{display:flex;align-items:flex-start;gap:12px;padding:10px 14px;background:var(--bg4);border:.5px solid var(--border2);border-radius:8px}
+.step-num{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--g);min-width:24px;line-height:1.1}
+
+/* LIMIT BOX */
+.lim-box{background:rgba(245,166,35,.05);border:.5px solid rgba(245,166,35,.2);border-radius:8px;padding:12px 16px}
+
+/* RESPONSIVE SIDEBAR HELPERS */
+@media(min-width:641px){
+  #main.collapsed{margin-left:0}
+  #sidebar.collapsed{transform:translateX(-100%)}
+  #overlay.visible{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div id="topbar">
+  <button id="menu-toggle" onclick="toggleSidebar()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="topbar-logo"><div class="topbar-logo-dot"></div>GLOBAL</div>
+  <div class="topbar-sep"></div>
+  <div class="topbar-title" id="topbar-title">Calculadora de Rendimento</div>
+</div>
+
+<!-- OVERLAY -->
+<div id="overlay" onclick="closeSidebar()"></div>
+
+<!-- SIDEBAR -->
+<nav id="sidebar">
+  <div class="sidebar-section">Ferramentas</div>
+  <div class="nav-item active" onclick="showPage('calc',this,'Calculadora de Rendimento')">
+    <div class="nav-icon">⬜</div>
+    <span>Calculadora</span>
+  </div>
+  <div class="nav-item" onclick="showPage('fin',this,'Comparação Financeira')">
+    <div class="nav-icon">💰</div>
+    <span>Financeiro</span>
+    <span class="nav-badge">$</span>
+  </div>
+  <div class="nav-item" onclick="showPage('comp',this,'Comparativo Técnico')">
+    <div class="nav-icon">⚖</div>
+    <span>Comparativo</span>
+  </div>
+  <div class="nav-item" onclick="showPage('prod',this,'Produtividade')">
+    <div class="nav-icon">📊</div>
+    <span>Produtividade</span>
+  </div>
+  <div class="nav-item" onclick="showPage('ficha',this,'Ficha Técnica')">
+    <div class="nav-icon">📋</div>
+    <span>Ficha Técnica</span>
+  </div>
+  <div class="sidebar-footer">
+    Argamassa Polimérica Global<br>
+    <span style="color:var(--text3)">(62) 98206-5810</span>
+  </div>
+</nav>
+
+<!-- MAIN CONTENT -->
+<div id="main">
+
+<!-- CALCULADORA -->
+<div id="page-calc" class="page active">
+  <div class="hero-band">
+    <div class="hero-eyebrow">Calculadora de Rendimento</div>
+    <h1>Quantas bisnagas<br>para <span>sua obra?</span></h1>
+    <p class="hero-sub">Insira a área e veja rendimento, dias de obra e ganho de produtividade em tempo real.</p>
+  </div>
+
+  <div class="sec">Parâmetros</div>
+  <div class="card card-g" style="margin-bottom:14px">
+    <div class="sl-row">
+      <label>Área total da parede</label>
+      <input type="range" min="5" max="500" step="5" value="50" id="area" oninput="calcMain()">
+      <span class="v" id="area-out">50 m²</span>
+    </div>
+    <div class="sl-row">
+      <label>Bisnagas de 3 kg</label>
+      <input type="range" min="1" max="100" step="1" value="1" id="bisnagas" oninput="calcMain()">
+      <span class="v" id="bisnagas-out">1 un</span>
+    </div>
+    <div class="sl-row">
+      <label>Pedreiros na equipe</label>
+      <input type="range" min="1" max="20" step="1" value="2" id="nped" oninput="calcMain()">
+      <span class="v" id="nped-out">2</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <label style="font-size:12px;color:var(--text2);min-width:130px;flex-shrink:0">Qualidade do bloco</label>
+      <select id="qualidade" onchange="calcMain()">
+        <option value="1.0">Regular — superfície padrão</option>
+        <option value="0.85">Ruim — bloco irregular ou poroso (−15%)</option>
+        <option value="1.1">Ótima — tijolo ecológico, bloco celular (+10%)</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="sec">Rendimento</div>
+  <div class="g4" style="margin-bottom:14px">
+    <div class="met mg"><div class="met-lbl">Área coberta</div><div class="met-val green" id="c-area">—</div><div class="met-sub">metros²</div></div>
+    <div class="met"><div class="met-lbl">Total kg</div><div class="met-val" id="c-kg">—</div><div class="met-sub">disponível</div></div>
+    <div class="met"><div class="met-lbl">Bisnagas p/ obra</div><div class="met-val" id="c-bis-obra">—</div><div class="met-sub" id="c-area-ref-lbl">para 50 m²</div></div>
+    <div class="met"><div class="met-lbl">Sobra / Falta</div><div class="met-val" id="c-saldo">—</div><div class="met-sub" id="c-saldo-lbl">m²</div></div>
+  </div>
+
+  <div class="sec">Tempo de obra (8 h/dia por pedreiro)</div>
+  <div class="g4" style="margin-bottom:14px">
+    <div class="met mg"><div class="met-lbl">Global — dias</div><div class="met-val green" id="c-dias-g">—</div><div class="met-sub" id="c-ped-g-lbl">2 pedreiro(s)</div></div>
+    <div class="met"><div class="met-lbl">Global — m²/h</div><div class="met-val">1,5</div><div class="met-sub">por pedreiro</div></div>
+    <div class="met mr"><div class="met-lbl">Trad. — dias</div><div class="met-val red" id="c-dias-t">—</div><div class="met-sub" id="c-ped-t-lbl">2 pedreiro(s)</div></div>
+    <div class="met"><div class="met-lbl">Trad. — m²/h</div><div class="met-val">0,93</div><div class="met-sub">por pedreiro</div></div>
+  </div>
+
+  <div class="sav-hero">
+    <div class="sav-big" id="c-econ-dias">—</div>
+    <div class="sav-desc">
+      <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--text);margin-bottom:3px">dias economizados com a Global</div>
+      <div style="font-size:12px;color:var(--text2)">Ganho de <strong id="c-pct" style="color:var(--g)">—</strong> de produtividade vs. método convencional.</div>
+    </div>
+    <div class="bar-wrap">
+      <div class="bar-lbl"><span>Global</span><span id="c-bar-pct">—% mais rápido</span></div>
+      <div class="bar-track"><div class="bar-fill" id="c-bar" style="width:0%"></div></div>
+    </div>
+  </div>
+  <div class="tip" id="c-tip">—</div>
+</div>
+
+<!-- FINANCEIRO -->
+<div id="page-fin" class="page">
+  <div class="hero-band">
+    <div class="hero-eyebrow">Comparação Financeira</div>
+    <h1>Custo real por m²:<br><span>Global</span> vs Convencional</h1>
+    <p class="hero-sub">Insira os preços locais e veja qual método é mais econômico para sua obra considerando material, mão de obra e perdas.</p>
+  </div>
+
+  <div class="sec">Parâmetros da obra</div>
+  <div class="card card-g" style="margin-bottom:14px">
+    <div class="sl-row">
+      <label>Área total da obra</label>
+      <input type="range" min="10" max="1000" step="10" value="100" id="f-area" oninput="calcFin()">
+      <span class="v" id="f-area-out">100 m²</span>
+    </div>
+    <div class="sl-row">
+      <label>Pedreiros na equipe</label>
+      <input type="range" min="1" max="20" step="1" value="2" id="f-nped" oninput="calcFin()">
+      <span class="v" id="f-nped-out">2</span>
+    </div>
+    <div class="sl-row">
+      <label>Custo diário pedreiro (R$)</label>
+      <input type="range" min="150" max="800" step="10" value="280" id="f-ped-diaria" oninput="calcFin()">
+      <span class="v" id="f-ped-diaria-out">R$280</span>
+    </div>
+    <div class="sl-row">
+      <label>Custo ajudante/dia (R$)</label>
+      <input type="range" min="80" max="400" step="10" value="160" id="f-aj-diaria" oninput="calcFin()">
+      <span class="v" id="f-aj-diaria-out">R$160</span>
+    </div>
+  </div>
+
+  <div class="g2" style="margin-bottom:14px">
+    <div class="card">
+      <div class="sec" style="margin-bottom:12px">Global Polimérica</div>
+      <div class="sl-row">
+        <label>Preço bisnaga 3 kg (R$)</label>
+        <input type="range" min="10" max="80" step="1" value="28" id="f-bis-preco" oninput="calcFin()">
+        <span class="v" id="f-bis-preco-out">R$28</span>
+      </div>
+      <div class="tip">Rendimento: 1 m² por kg · 3 m² por bisnaga.<br>Sem ajudante. Sem betoneira.</div>
+    </div>
+    <div class="card">
+      <div class="sec" style="margin-bottom:12px">Método Convencional</div>
+      <div class="sl-row">
+        <label>Cimento por obra (sc 50 kg)</label>
+        <input type="range" min="1" max="100" step="1" value="10" id="f-cim-qtd" oninput="calcFin()">
+        <span class="v" id="f-cim-qtd-out">10 sc</span>
+      </div>
+      <div class="sl-row">
+        <label>Preço saco cimento (R$)</label>
+        <input type="range" min="20" max="60" step="1" value="36" id="f-cim-preco" oninput="calcFin()">
+        <span class="v" id="f-cim-preco-out">R$36</span>
+      </div>
+      <div class="sl-row">
+        <label>Areia (m³)</label>
+        <input type="range" min="0.5" max="20" step="0.5" value="2" id="f-areia-qtd" oninput="calcFin()">
+        <span class="v" id="f-areia-qtd-out">2,0 m³</span>
+      </div>
+      <div class="sl-row">
+        <label>Preço areia por m³ (R$)</label>
+        <input type="range" min="60" max="300" step="10" value="120" id="f-areia-preco" oninput="calcFin()">
+        <span class="v" id="f-areia-preco-out">R$120</span>
+      </div>
+      <div class="sl-row">
+        <label>Cal (sc 20 kg)</label>
+        <input type="range" min="0" max="50" step="1" value="5" id="f-cal-qtd" oninput="calcFin()">
+        <span class="v" id="f-cal-qtd-out">5 sc</span>
+      </div>
+      <div class="sl-row">
+        <label>Preço cal por saco (R$)</label>
+        <input type="range" min="10" max="50" step="1" value="22" id="f-cal-preco" oninput="calcFin()">
+        <span class="v" id="f-cal-preco-out">R$22</span>
+      </div>
+      <div class="sl-row">
+        <label>Aluguel betoneira/dia (R$)</label>
+        <input type="range" min="0" max="200" step="10" value="60" id="f-bet-aluguel" oninput="calcFin()">
+        <span class="v" id="f-bet-aluguel-out">R$60</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULTADO -->
+  <div class="sec">Resultado financeiro</div>
+  <div class="g2" style="margin-bottom:14px">
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+        <div style="width:8px;height:8px;border-radius:50%;background:var(--g)"></div>
+        <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700">Global Polimérica</div>
+      </div>
+      <div class="fin-result">
+        <div class="fin-row"><span class="fin-label">Bisnagas necessárias</span><span class="fin-val" id="fr-g-bis">—</span></div>
+        <div class="fin-row"><span class="fin-label">Custo total de material</span><span class="fin-val green" id="fr-g-mat">—</span></div>
+        <div class="fin-row"><span class="fin-label">Dias de obra</span><span class="fin-val" id="fr-g-dias">—</span></div>
+        <div class="fin-row"><span class="fin-label">Custo de mão de obra</span><span class="fin-val green" id="fr-g-mo">—</span></div>
+        <div class="fin-row"><span class="fin-label">Ajudantes adicionais</span><span class="fin-val green">R$ 0,00</span></div>
+        <div class="fin-row"><span class="fin-label">Betoneira</span><span class="fin-val green">R$ 0,00</span></div>
+        <div class="fin-row" style="background:rgba(0,197,122,.06);border-radius:8px;padding:8px 10px;margin-top:4px;border-bottom:none">
+          <span class="fin-label" style="font-weight:500;color:var(--text)">TOTAL DA OBRA</span>
+          <span class="fin-val green" style="font-size:17px" id="fr-g-total">—</span>
+        </div>
+      </div>
+      <div class="fin-row" style="margin-top:10px"><span class="fin-label">Custo por m²</span><span class="fin-val green" id="fr-g-m2">—</span></div>
+    </div>
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+        <div style="width:8px;height:8px;border-radius:50%;background:var(--r)"></div>
+        <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700">Método Convencional</div>
+      </div>
+      <div class="fin-result" style="background:linear-gradient(135deg,rgba(224,82,82,.06),rgba(224,82,82,.01));border-color:rgba(224,82,82,.2)">
+        <div class="fin-row"><span class="fin-label">Materiais (cim+areia+cal)</span><span class="fin-val red" id="fr-t-mat">—</span></div>
+        <div class="fin-row"><span class="fin-label">Dias de obra</span><span class="fin-val" id="fr-t-dias">—</span></div>
+        <div class="fin-row"><span class="fin-label">Custo de mão de obra</span><span class="fin-val red" id="fr-t-mo">—</span></div>
+        <div class="fin-row"><span class="fin-label">Ajudante(s) adicionais</span><span class="fin-val red" id="fr-t-aj">—</span></div>
+        <div class="fin-row"><span class="fin-label">Betoneira (aluguel)</span><span class="fin-val red" id="fr-t-bet">—</span></div>
+        <div class="fin-row" style="background:rgba(224,82,82,.06);border-radius:8px;padding:8px 10px;margin-top:4px;border-bottom:none">
+          <span class="fin-label" style="font-weight:500;color:var(--text)">TOTAL DA OBRA</span>
+          <span class="fin-val red" style="font-size:17px" id="fr-t-total">—</span>
+        </div>
+      </div>
+      <div class="fin-row" style="margin-top:10px"><span class="fin-label">Custo por m²</span><span class="fin-val red" id="fr-t-m2">—</span></div>
+    </div>
+  </div>
+
+  <!-- ECONOMIA TOTAL -->
+  <div class="g2" style="margin-bottom:16px">
+    <div class="card" style="background:linear-gradient(135deg,rgba(0,197,122,.08),rgba(0,197,122,.02));border-color:var(--border)">
+      <div class="econ-hero">
+        <div class="econ-num" id="fr-econ-total">—</div>
+        <div class="econ-lbl">economia total com a Global</div>
+        <div style="margin-top:12px;font-size:12px;color:var(--text3)" id="fr-econ-pct">—</div>
+      </div>
+    </div>
+    <div class="card" style="background:linear-gradient(135deg,rgba(0,197,122,.08),rgba(0,197,122,.02));border-color:var(--border)">
+      <div class="econ-hero">
+        <div class="econ-num" id="fr-econ-m2">—</div>
+        <div class="econ-lbl">economia por m²</div>
+        <div style="margin-top:12px;font-size:12px;color:var(--text3)" id="fr-econ-m2-desc">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHART FINANCEIRO -->
+  <div class="sec">Composição dos custos</div>
+  <div class="card" style="margin-bottom:16px">
+    <div class="ch-leg">
+      <div class="ch-leg-i"><div class="ch-dot" style="background:#00C57A"></div>Global</div>
+      <div class="ch-leg-i"><div class="ch-dot" style="background:#e05252"></div>Convencional</div>
+    </div>
+    <div class="ch-wrap"><canvas id="finChart"></canvas></div>
+  </div>
+
+  <div class="tip" id="fr-tip">—</div>
+</div>
+
+<!-- COMPARATIVO -->
+<div id="page-comp" class="page">
+  <div class="hero-band">
+    <div class="hero-eyebrow">Comparativo Técnico</div>
+    <h1>Global <span>vs</span><br>Convencional</h1>
+    <p class="hero-sub">Análise completa de todos os critérios técnicos, operacionais e logísticos entre os dois métodos.</p>
+  </div>
+
+  <div class="sec">Tabela comparativa</div>
+  <div class="card" style="overflow-x:auto;margin-bottom:16px">
+    <table class="ctbl">
+      <thead><tr><th style="width:38%">Critério</th><th class="green">Global Polimérica</th><th class="red">Convencional</th></tr></thead>
+      <tbody>
+        <tr><td>Produção por pedreiro</td><td class="tv">1,5 m²/hora · 12 m²/dia</td><td class="rv">0,93 m²/hora · 7,4 m²/dia</td></tr>
+        <tr><td>Ganho de produtividade</td><td class="tv"><span class="bdg bdg-g">+60% vs convencional</span></td><td class="rv">—</td></tr>
+        <tr><td>Preparo do material</td><td class="tv">Zero — pronta na bisnaga</td><td class="rv">45–60 min/dia de betoneira</td></tr>
+        <tr><td>Equipe necessária</td><td class="tv">Só pedreiro(s)</td><td class="rv">+ ajudante + operador de betoneira</td></tr>
+        <tr><td>Desperdício de material</td><td class="tv">Mínimo (bisnaga fechada)</td><td class="rv">15–25% da massa produzida</td></tr>
+        <tr><td>Risco de erro no traço</td><td class="tv"><span class="bdg bdg-g">Nenhum</span></td><td class="rv"><span class="bdg bdg-w">Médio a alto</span></td></tr>
+        <tr><td>Consumo de água</td><td class="tv"><span class="bdg bdg-g">Zero</span></td><td class="rv"><span class="bdg bdg-r">Sim — litros/dia</span></td></tr>
+        <tr><td>Energia elétrica</td><td class="tv"><span class="bdg bdg-g">Zero</span></td><td class="rv"><span class="bdg bdg-r">Sim</span></td></tr>
+        <tr><td>Sujeira na obra</td><td class="tv"><span class="bdg bdg-g">Mínima</span></td><td class="rv"><span class="bdg bdg-r">Alta</span></td></tr>
+        <tr><td>Início de cura</td><td class="tv"><span class="bdg bdg-g">2 horas</span></td><td class="rv"><span class="bdg bdg-w">4–6 horas</span></td></tr>
+        <tr><td>Controle de qualidade</td><td class="tv">Traço sempre uniforme</td><td class="rv">Variável por operador</td></tr>
+        <tr><td>Peso estrutural</td><td class="tv">Menor (junta fina)</td><td class="rv">Maior (junta espessa)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="g2">
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px"><div style="width:8px;height:8px;border-radius:50%;background:var(--g)"></div><div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700">Custos eliminados pela Global</div></div>
+      <ul class="vl">
+        <li><span class="ic" style="color:var(--g)">✓</span>Salário do ajudante de massa</li>
+        <li><span class="ic" style="color:var(--g)">✓</span>Salário do operador de betoneira</li>
+        <li><span class="ic" style="color:var(--g)">✓</span>Aluguel / compra de betoneira</li>
+        <li><span class="ic" style="color:var(--g)">✓</span>Energia elétrica da betoneira</li>
+        <li><span class="ic" style="color:var(--g)">✓</span>Água consumida no traço</li>
+        <li><span class="ic" style="color:var(--g)">✓</span>Material desperdiçado (15–25%)</li>
+        <li><span class="ic" style="color:var(--g)">✓</span>Retrabalho por traço incorreto</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px"><div style="width:8px;height:8px;border-radius:50%;background:var(--r)"></div><div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700">Custos ocultos do convencional</div></div>
+      <ul class="vl">
+        <li><span class="ic" style="color:var(--r)">✗</span>Mínimo 2–3 pessoas extras na equipe</li>
+        <li><span class="ic" style="color:var(--r)">✗</span>Tempo morto aguardando massa</li>
+        <li><span class="ic" style="color:var(--r)">✗</span>Variação de resistência por batch</li>
+        <li><span class="ic" style="color:var(--r)">✗</span>Massa que seca antes de ser usada</li>
+        <li><span class="ic" style="color:var(--r)">✗</span>Junta espessa → maior consumo de bloco</li>
+        <li><span class="ic" style="color:var(--r)">✗</span>Maior entulho e custo de limpeza</li>
+        <li><span class="ic" style="color:var(--r)">✗</span>Maior carga de peso na estrutura</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- PRODUTIVIDADE -->
+<div id="page-prod" class="page">
+  <div class="hero-band">
+    <div class="hero-eyebrow">Simulação de Produtividade</div>
+    <h1>Dias de obra e <span>equipe</span><br>necessária</h1>
+    <p class="hero-sub">Ajuste a área e o número de pedreiros para comparar o tempo real dos dois métodos.</p>
+  </div>
+
+  <div class="sec">Parâmetros</div>
+  <div class="card card-g" style="margin-bottom:14px">
+    <div class="sl-row">
+      <label>Área da obra</label>
+      <input type="range" min="5" max="1000" step="5" value="100" id="p-area" oninput="calcProd()">
+      <span class="v" id="p-area-out">100 m²</span>
+    </div>
+    <div class="sl-row">
+      <label>Pedreiros</label>
+      <input type="range" min="1" max="20" step="1" value="2" id="p-nped" oninput="calcProd()">
+      <span class="v" id="p-nped-out">2</span>
+    </div>
+  </div>
+
+  <div class="g2" style="margin-bottom:14px">
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px"><div style="width:8px;height:8px;border-radius:50%;background:var(--g)"></div><div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700">Global Polimérica</div></div>
+      <div class="g2">
+        <div class="met mg"><div class="met-lbl">m²/hora (equipe)</div><div class="met-val green" id="p-g-m2h">—</div></div>
+        <div class="met mg"><div class="met-lbl">m²/dia (equipe)</div><div class="met-val green" id="p-g-m2d">—</div></div>
+        <div class="met mg" style="grid-column:1/-1"><div class="met-lbl">Dias para concluir</div><div class="met-val green" id="p-g-dias">—</div><div class="met-sub" id="p-g-h-lbl">— horas</div></div>
+      </div>
+      <div class="tip" style="margin-top:10px">Somente pedreiros. Sem auxiliar para preparar massa.</div>
+    </div>
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px"><div style="width:8px;height:8px;border-radius:50%;background:var(--r)"></div><div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700">Método Convencional</div></div>
+      <div class="g2">
+        <div class="met mr"><div class="met-lbl">m²/hora (equipe)</div><div class="met-val red" id="p-t-m2h">—</div></div>
+        <div class="met mr"><div class="met-lbl">m²/dia (equipe)</div><div class="met-val red" id="p-t-m2d">—</div></div>
+        <div class="met mr" style="grid-column:1/-1"><div class="met-lbl">Dias para concluir</div><div class="met-val red" id="p-t-dias">—</div><div class="met-sub" id="p-t-h-lbl">— horas</div></div>
+      </div>
+      <div class="tip tip-r" style="margin-top:10px">Precisa de: pedreiros + ajudante(s) + operador de betoneira.</div>
+    </div>
+  </div>
+
+  <div class="g2" style="margin-bottom:14px">
+    <div class="card">
+      <div class="sec" style="margin-bottom:10px">Global — equipe mínima</div>
+      <div class="met mg"><div class="met-lbl">Total de pessoas</div><div class="met-val green" id="p-g-pessoas">—</div><div class="met-sub">só pedreiros</div></div>
+    </div>
+    <div class="card">
+      <div class="sec" style="margin-bottom:10px">Convencional — equipe real</div>
+      <div class="met mr"><div class="met-lbl">Total de pessoas</div><div class="met-val red" id="p-t-pessoas">—</div><div class="met-sub" id="p-t-pes-desc">—</div></div>
+    </div>
+  </div>
+
+  <div class="sec">Gráfico</div>
+  <div class="card">
+    <div class="ch-leg">
+      <div class="ch-leg-i"><div class="ch-dot" style="background:#00C57A"></div>Global</div>
+      <div class="ch-leg-i"><div class="ch-dot" style="background:#e05252"></div>Convencional</div>
+    </div>
+    <div class="ch-wrap"><canvas id="prodChart"></canvas></div>
+  </div>
+</div>
+
+<!-- FICHA -->
+<div id="page-ficha" class="page">
+  <div class="hero-band">
+    <div class="hero-eyebrow">Ficha Técnica Oficial</div>
+    <h1>Argamassa Polimérica <span>Global</span></h1>
+    <p class="hero-sub">Todos os dados técnicos, normas, modo de aplicação e restrições do produto conforme ficha oficial do fabricante.</p>
+  </div>
+
+  <div class="sec">Dados técnicos</div>
+  <div class="fg" style="margin-bottom:14px">
+    <div class="fr"><span class="fk">Rendimento médio</span><span class="fv">3,0 kg / m²</span></div>
+    <div class="fr"><span class="fk">Embalagem</span><span class="fv">Bisnaga 3 kg</span></div>
+    <div class="fr"><span class="fk">Início de cura</span><span class="fv">2 horas</span></div>
+    <div class="fr"><span class="fk">Cura total</span><span class="fv">24 a 72 horas</span></div>
+    <div class="fr"><span class="fk">Validade (fechado)</span><span class="fv">6 meses</span></div>
+    <div class="fr"><span class="fk">Validade (aberto)</span><span class="fv">7 dias</span></div>
+    <div class="fr"><span class="fk">Empilhamento máx.</span><span class="fv">3 caixas</span></div>
+    <div class="fr"><span class="fk">Ganho de produtiv.</span><span class="fv">Até 60% vs conv.</span></div>
+    <div class="fr"><span class="fk">Composição</span><span class="fv">Areia, pó de brita, dolomita, polímeros</span></div>
+    <div class="fr"><span class="fk">Pavimentos</span><span class="fv">Até 3 sem análise prévia</span></div>
+  </div>
+
+  <div class="sec">Normas</div>
+  <div class="g3" style="margin-bottom:14px">
+    <div class="met"><div class="met-lbl">Norma</div><div class="met-val" style="font-size:14px">NBR 16590-1</div></div>
+    <div class="met"><div class="met-lbl">Norma</div><div class="met-val" style="font-size:14px">NBR 16590-2</div></div>
+    <div class="met"><div class="met-lbl">Norma</div><div class="met-val" style="font-size:14px">NBR 15575:2013</div></div>
+  </div>
+
+  <div class="sec">Modo de aplicação</div>
+  <div class="card" style="margin-bottom:14px">
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div class="step-item"><span class="step-num">1</span><span style="font-size:12px;color:var(--text2)">Realizar marcação bem nivelada na primeira fiada com argamassa convencional para garantir nivelamento do piso.</span></div>
+      <div class="step-item"><span class="step-num">2</span><span style="font-size:12px;color:var(--text2)">Misturar o produto por 5 segundos e cortar a embalagem no local demarcado.</span></div>
+      <div class="step-item"><span class="step-num">3</span><span style="font-size:12px;color:var(--text2)">Aplicar dois cordões contínuos de ≈ 1,0 cm de diâmetro ao longo da área a assentar.</span></div>
+      <div class="step-item"><span class="step-num">4</span><span style="font-size:12px;color:var(--text2)">Assentar os blocos pressionando firmemente. Subir até a altura do andaime e retornar após 6 horas para continuar.</span></div>
+    </div>
+  </div>
+
+  <div class="sec">Limitações</div>
+  <div class="lim-box" style="margin-bottom:14px">
+    <ul style="list-style:none;display:flex;flex-direction:column;gap:6px">
+      <li style="font-size:12px;color:var(--text2)">— Não recomendado para sistemas estruturais acima de 3 pavimentos sem análise prévia do engenheiro responsável.</li>
+      <li style="font-size:12px;color:var(--text2)">— Não aplicar em tijolos e blocos úmidos, com excesso de poeira ou contaminantes.</li>
+      <li style="font-size:12px;color:var(--text2)">— Armazenar em local fresco e coberto, longe de calor e umidade. Produto não inflamável.</li>
+    </ul>
+  </div>
+
+  <div class="sec">Contato</div>
+  <div class="card">
+    <div style="font-size:13px;color:var(--text2);line-height:2">
+      Av. Guarujá, Qd 79 – Lt 22 – Jardim Atlântico<br>
+      Goiânia – GO, 74343-370<br>
+      <span style="color:var(--g)">(62) 98206-5810</span>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+const G_M2H=1.5, T_M2H=0.93, HDIA=8, KG_M2=3;
+let prodChart=null, finChart=null;
+let sidebarOpen=true;
+
+function r(n,d=1){return Number(n).toFixed(d).replace('.',',')}
+function ri(n){return Math.round(n)}
+function brl(n){return 'R$ '+n.toFixed(2).replace('.',',').replace(/\B(?=(\d{3})+(?!\d))/g,'.')}
+
+function toggleSidebar(){
+  sidebarOpen=!sidebarOpen;
+  document.getElementById('sidebar').classList.toggle('collapsed',!sidebarOpen);
+  document.getElementById('main').classList.toggle('collapsed',!sidebarOpen);
+  document.getElementById('menu-toggle').classList.toggle('open',sidebarOpen);
+  if(window.innerWidth<=640){
+    document.getElementById('sidebar').classList.toggle('mobile-open',sidebarOpen);
+    document.getElementById('overlay').classList.toggle('visible',sidebarOpen);
+  }
+}
+function closeSidebar(){
+  sidebarOpen=false;
+  document.getElementById('sidebar').classList.remove('mobile-open');
+  document.getElementById('overlay').classList.remove('visible');
+  document.getElementById('menu-toggle').classList.remove('open');
+}
+
+function showPage(id,el,title){
+  document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('page-'+id).classList.add('active');
+  document.getElementById('topbar-title').textContent=title;
+  if(id==='prod')calcProd();
+  if(id==='fin')calcFin();
+  if(window.innerWidth<=640)closeSidebar();
+}
+
+function calcMain(){
+  const area=+document.getElementById('area').value;
+  const nbis=+document.getElementById('bisnagas').value;
+  const nped=+document.getElementById('nped').value;
+  const qual=+document.getElementById('qualidade').value;
+  document.getElementById('area-out').textContent=area+' m²';
+  document.getElementById('bisnagas-out').textContent=nbis+' un';
+  document.getElementById('nped-out').textContent=nped;
+  const totalKg=nbis*3, areaG=(totalKg/KG_M2)*qual;
+  const bisNec=Math.ceil((area*KG_M2)/(qual*3));
+  const saldo=areaG-area;
+  document.getElementById('c-area').textContent=r(areaG)+' m²';
+  document.getElementById('c-kg').textContent=ri(totalKg)+' kg';
+  document.getElementById('c-bis-obra').textContent=bisNec+' un';
+  document.getElementById('c-area-ref-lbl').textContent='para '+area+' m²';
+  const sEl=document.getElementById('c-saldo');
+  sEl.textContent=(saldo>=0?'+':'')+r(saldo)+' m²';
+  sEl.className='met-val '+(saldo>=0?'green':'red');
+  document.getElementById('c-saldo-lbl').textContent=saldo>=0?'m² sobra':'m² falta';
+  const gD=Math.ceil(area/(G_M2H*HDIA*nped));
+  const tD=Math.ceil(area/(T_M2H*HDIA*nped));
+  document.getElementById('c-dias-g').textContent=gD;
+  document.getElementById('c-ped-g-lbl').textContent=nped+' pedreiro(s)';
+  document.getElementById('c-dias-t').textContent=tD;
+  document.getElementById('c-ped-t-lbl').textContent=nped+' pedreiro(s)';
+  const econ=Math.max(0,tD-gD);
+  const pct=tD>0?Math.round(((tD-gD)/tD)*100):0;
+  document.getElementById('c-econ-dias').textContent=econ;
+  document.getElementById('c-pct').textContent=pct+'%';
+  document.getElementById('c-bar-pct').textContent=pct+'% mais rápido';
+  document.getElementById('c-bar').style.width=Math.min(100,Math.max(0,pct))+'%';
+  document.getElementById('c-tip').textContent=econ<=0?'Para esta área a diferença de dias é pequena — mas a Global elimina ajudantes, betoneira e desperdício mesmo assim.':econ===1?'Com a Global você conclui 1 dia antes — e ainda economiza na equipe e no material desperdiçado.':'Com a Global você conclui '+econ+' dias antes. Em obras maiores, esse ganho representa redução direta de custo de mão de obra.';
+}
+
+function calcFin(){
+  const area=+document.getElementById('f-area').value;
+  const nped=+document.getElementById('f-nped').value;
+  const pedD=+document.getElementById('f-ped-diaria').value;
+  const ajD=+document.getElementById('f-aj-diaria').value;
+  const bisPrc=+document.getElementById('f-bis-preco').value;
+  const cimQ=+document.getElementById('f-cim-qtd').value;
+  const cimP=+document.getElementById('f-cim-preco').value;
+  const areiaQ=+document.getElementById('f-areia-qtd').value;
+  const areiaP=+document.getElementById('f-areia-preco').value;
+  const calQ=+document.getElementById('f-cal-qtd').value;
+  const calP=+document.getElementById('f-cal-preco').value;
+  const betAl=+document.getElementById('f-bet-aluguel').value;
+
+  document.getElementById('f-area-out').textContent=area+' m²';
+  document.getElementById('f-nped-out').textContent=nped;
+  document.getElementById('f-ped-diaria-out').textContent='R$'+pedD;
+  document.getElementById('f-aj-diaria-out').textContent='R$'+ajD;
+  document.getElementById('f-bis-preco-out').textContent='R$'+bisPrc;
+  document.getElementById('f-cim-qtd-out').textContent=cimQ+' sc';
+  document.getElementById('f-cim-preco-out').textContent='R$'+cimP;
+  document.getElementById('f-areia-qtd-out').textContent=r(areiaQ)+' m³';
+  document.getElementById('f-areia-preco-out').textContent='R$'+areiaP;
+  document.getElementById('f-cal-qtd-out').textContent=calQ+' sc';
+  document.getElementById('f-cal-preco-out').textContent='R$'+calP;
+  document.getElementById('f-bet-aluguel-out').textContent='R$'+betAl;
+
+  // GLOBAL
+  const bisNec=Math.ceil((area*KG_M2)/3);
+  const gMatCost=bisNec*bisPrc;
+  const gDias=Math.ceil(area/(G_M2H*HDIA*nped));
+  const gMoCost=gDias*nped*pedD;
+  const gTotal=gMatCost+gMoCost;
+  const gM2=gTotal/area;
+
+  // CONVENCIONAL
+  const tMatCost=(cimQ*cimP)+(areiaQ*areiaP)+(calQ*calP);
+  const tDias=Math.ceil(area/(T_M2H*HDIA*nped));
+  const tMoCost=tDias*nped*pedD;
+  const numAj=Math.max(1,nped);
+  const tAjCost=tDias*numAj*ajD;
+  const tBetCost=tDias*betAl;
+  const tTotal=tMatCost+tMoCost+tAjCost+tBetCost;
+  const tM2=tTotal/area;
+
+  // DISPLAY GLOBAL
+  document.getElementById('fr-g-bis').textContent=bisNec+' un';
+  document.getElementById('fr-g-mat').textContent=brl(gMatCost);
+  document.getElementById('fr-g-dias').textContent=gDias+' dias';
+  document.getElementById('fr-g-mo').textContent=brl(gMoCost);
+  document.getElementById('fr-g-total').textContent=brl(gTotal);
+  document.getElementById('fr-g-m2').textContent=brl(gM2)+'/m²';
+
+  // DISPLAY TRAD
+  document.getElementById('fr-t-mat').textContent=brl(tMatCost);
+  document.getElementById('fr-t-dias').textContent=tDias+' dias';
+  document.getElementById('fr-t-mo').textContent=brl(tMoCost);
+  document.getElementById('fr-t-aj').textContent=brl(tAjCost);
+  document.getElementById('fr-t-bet').textContent=brl(tBetCost);
+  document.getElementById('fr-t-total').textContent=brl(tTotal);
+  document.getElementById('fr-t-m2').textContent=brl(tM2)+'/m²';
+
+  // ECONOMIA
+  const econ=tTotal-gTotal;
+  const econM2=tM2-gM2;
+  const pct=tTotal>0?Math.round((econ/tTotal)*100):0;
+  document.getElementById('fr-econ-total').textContent=brl(econ);
+  document.getElementById('fr-econ-pct').textContent='redução de '+pct+'% no custo total';
+  document.getElementById('fr-econ-m2').textContent=brl(econM2)+'/m²';
+  document.getElementById('fr-econ-m2-desc').textContent='Global custa '+brl(gM2)+'/m² vs '+brl(tM2)+'/m² do conv.';
+
+  const tipEl=document.getElementById('fr-tip');
+  if(econ>0){
+    tipEl.className='tip';
+    tipEl.textContent='Para '+area+' m², a Global economiza '+brl(econ)+' no total ('+brl(econM2)+'/m²). Quanto maior a obra, maior o ganho financeiro.';
+  } else {
+    tipEl.className='tip tip-w';
+    tipEl.textContent='Neste cenário o convencional saiu mais barato. Tente ajustar os preços dos insumos para ver como eles impactam o resultado.';
+  }
+
+  // CHART
+  const ctx=document.getElementById('finChart').getContext('2d');
+  if(finChart)finChart.destroy();
+  finChart=new Chart(ctx,{
+    type:'bar',
+    data:{
+      labels:['Material','Mão de obra','Ajudantes','Betoneira','Total'],
+      datasets:[
+        {label:'Global',data:[gMatCost,gMoCost,0,0,gTotal],backgroundColor:'rgba(0,197,122,0.7)',borderColor:'#00C57A',borderWidth:1,borderRadius:4},
+        {label:'Convencional',data:[tMatCost,tMoCost,tAjCost,tBetCost,tTotal],backgroundColor:'rgba(224,82,82,0.65)',borderColor:'#e05252',borderWidth:1,borderRadius:4}
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{backgroundColor:'#252c28',titleColor:'#a8bdb4',bodyColor:'#eef3f0',borderColor:'rgba(0,197,122,0.2)',borderWidth:1,callbacks:{label:ctx=>ctx.dataset.label+': '+brl(ctx.raw)}}},
+      scales:{
+        x:{ticks:{color:'#5e7a6e',font:{size:10,family:'DM Sans'}},grid:{display:false},border:{color:'rgba(255,255,255,0.05)'}},
+        y:{beginAtZero:true,ticks:{color:'#5e7a6e',font:{size:10,family:'DM Mono'},callback:v=>v>=1000?'R$'+(v/1000).toFixed(0)+'k':'R$'+v},grid:{color:'rgba(255,255,255,0.04)'},border:{color:'rgba(255,255,255,0.05)'}}
+      }
+    }
+  });
+}
+
+function calcProd(){
+  const area=+document.getElementById('p-area').value;
+  const nped=+document.getElementById('p-nped').value;
+  document.getElementById('p-area-out').textContent=area+' m²';
+  document.getElementById('p-nped-out').textContent=nped;
+  const gM2h=G_M2H*nped,tM2h=T_M2H*nped;
+  const gM2d=gM2h*HDIA,tM2d=tM2h*HDIA;
+  const gD=Math.ceil(area/gM2d),tD=Math.ceil(area/tM2d);
+  document.getElementById('p-g-m2h').textContent=r(gM2h)+' m²';
+  document.getElementById('p-g-m2d').textContent=r(gM2d)+' m²';
+  document.getElementById('p-g-dias').textContent=gD;
+  document.getElementById('p-g-h-lbl').textContent=ri(area/gM2h)+' horas';
+  document.getElementById('p-t-m2h').textContent=r(tM2h)+' m²';
+  document.getElementById('p-t-m2d').textContent=r(tM2d)+' m²';
+  document.getElementById('p-t-dias').textContent=tD;
+  document.getElementById('p-t-h-lbl').textContent=ri(area/tM2h)+' horas';
+  document.getElementById('p-g-pessoas').textContent=nped;
+  const tPes=nped*2+1;
+  document.getElementById('p-t-pessoas').textContent=tPes;
+  document.getElementById('p-t-pes-desc').textContent=nped+' ped + '+nped+' aj + 1 op = '+tPes+' pessoas';
+  const ctx=document.getElementById('prodChart').getContext('2d');
+  if(prodChart)prodChart.destroy();
+  prodChart=new Chart(ctx,{
+    type:'bar',
+    data:{
+      labels:['Dias de obra','Pessoas na equipe','m²/dia'],
+      datasets:[
+        {label:'Global',data:[gD,nped,ri(gM2d)],backgroundColor:'rgba(0,197,122,0.7)',borderColor:'#00C57A',borderWidth:1,borderRadius:4},
+        {label:'Convencional',data:[tD,tPes,ri(tM2d)],backgroundColor:'rgba(224,82,82,0.65)',borderColor:'#e05252',borderWidth:1,borderRadius:4}
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{backgroundColor:'#252c28',titleColor:'#a8bdb4',bodyColor:'#eef3f0',borderColor:'rgba(0,197,122,0.2)',borderWidth:1}},
+      scales:{
+        x:{ticks:{color:'#5e7a6e',font:{size:10,family:'DM Sans'},autoSkip:false},grid:{display:false},border:{color:'rgba(255,255,255,0.05)'}},
+        y:{beginAtZero:true,ticks:{color:'#5e7a6e',font:{size:10,family:'DM Mono'}},grid:{color:'rgba(255,255,255,0.04)'},border:{color:'rgba(255,255,255,0.05)'}}
+      }
+    }
+  });
+}
+
+// INIT
+(function(){
+  calcMain();
+  calcFin();
+  calcProd();
+  // Responsive: iniciar sidebar fechado em mobile
+  if(window.innerWidth<=640){
+    sidebarOpen=false;
+    document.getElementById('sidebar').classList.remove('mobile-open');
+    document.getElementById('menu-toggle').classList.remove('open');
+    document.getElementById('main').style.marginLeft='0';
+  }
+})();
+</script>
+</body>
+</html>
