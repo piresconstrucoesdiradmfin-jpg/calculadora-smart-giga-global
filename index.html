@@ -8,44 +8,48 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
 :root{
-  --g:#00C57A;--r:#e05252;--b:#4a8ff5;--w:#f5a623;
-  --bg:#1d2220;--bg2:#232a26;--bg3:#282f2b;--bg4:#303c36;--bg5:#384540;
-  --brd:rgba(0,197,122,.15);--brd2:rgba(255,255,255,.08);--brd3:rgba(74,143,245,.18);
+  --g:#00C57A;--r:#e05252;--b:#4a8ff5;--w:#f5a623;--p:#a855f7;
+  --bg:#1d2220;--bg2:#222926;--bg3:#282f2b;--bg4:#303c36;--bg5:#384540;
+  --brd:rgba(0,197,122,.15);--brd2:rgba(255,255,255,.08);--brd3:rgba(74,143,245,.18);--brdp:rgba(168,85,247,.18);
   --txt:#ecf2ee;--txt2:#a4b8ad;--txt3:#5c7568;
-  --side:238px;--top:50px;
+  --side:240px;--top:50px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--txt);font-family:'DM Sans',sans-serif;font-weight:300;min-height:100vh;display:flex;flex-direction:column}
 
 /* TOPBAR */
 #tb{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--top);background:var(--bg);border-bottom:.5px solid var(--brd2);display:flex;align-items:center;padding:0 14px;gap:10px}
-#hbg{width:30px;height:30px;border-radius:7px;border:.5px solid var(--brd2);background:var(--bg3);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;flex-shrink:0;transition:.2s}
+#hbg{width:30px;height:30px;border-radius:7px;border:.5px solid var(--brd2);background:var(--bg3);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;flex-shrink:0}
 #hbg span{display:block;width:13px;height:1.5px;background:var(--txt2);border-radius:2px;transition:.25s}
 #hbg.o span:nth-child(1){transform:translateY(5.5px) rotate(45deg)}
 #hbg.o span:nth-child(2){opacity:0}
 #hbg.o span:nth-child(3){transform:translateY(-5.5px) rotate(-45deg)}
 .tbl{font-family:'Syne',sans-serif;font-weight:800;font-size:13px;color:var(--g);letter-spacing:.05em;display:flex;align-items:center;gap:5px}
 .tbl-dot{width:6px;height:6px;border-radius:50%;background:var(--g);animation:pu 2s ease-in-out infinite}
-@keyframes pu{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.5)}}
+@keyframes pu{0%,100%{opacity:1}50%{opacity:.3}}
 .tbs{width:1px;height:16px;background:var(--brd2)}
-.tbt{font-size:11px;color:var(--txt3)}
-.tb-pdf{margin-left:auto;display:flex;align-items:center;gap:6px;background:rgba(74,143,245,.12);border:.5px solid var(--brd3);color:var(--b);font-size:11px;font-weight:500;padding:5px 12px;border-radius:8px;cursor:pointer;transition:.15s;white-space:nowrap}
+.tbt{font-size:11px;color:var(--txt3);flex:1}
+.tb-pdf{display:flex;align-items:center;gap:6px;background:rgba(74,143,245,.12);border:.5px solid var(--brd3);color:var(--b);font-size:11px;font-weight:500;padding:5px 12px;border-radius:8px;cursor:pointer;white-space:nowrap}
 .tb-pdf:hover{background:rgba(74,143,245,.22)}
+.client-chip{background:rgba(0,197,122,.1);border:.5px solid var(--brd);border-radius:99px;padding:3px 10px;font-size:11px;color:var(--g);display:flex;align-items:center;gap:5px;white-space:nowrap;max-width:220px;overflow:hidden;text-overflow:ellipsis}
+.client-chip span{font-family:'DM Mono',monospace;font-size:10px}
 
 /* SIDEBAR */
 #sb{position:fixed;top:var(--top);left:0;bottom:0;z-index:150;width:var(--side);background:var(--bg);border-right:.5px solid var(--brd2);display:flex;flex-direction:column;transform:translateX(0);transition:transform .26s cubic-bezier(.4,0,.2,1)}
 #sb.hid{transform:translateX(-100%)}
-.ss{padding:12px 12px 5px;font-size:10px;color:var(--txt3);text-transform:uppercase;letter-spacing:.1em;font-weight:500}
-.si{display:flex;align-items:center;gap:9px;padding:7px 13px;margin:1px 7px;border-radius:7px;cursor:pointer;font-size:12px;color:var(--txt2);border:.5px solid transparent;transition:.14s}
+.ss{padding:10px 12px 4px;font-size:10px;color:var(--txt3);text-transform:uppercase;letter-spacing:.1em;font-weight:500}
+.si{display:flex;align-items:center;gap:8px;padding:7px 12px;margin:1px 7px;border-radius:7px;cursor:pointer;font-size:12px;color:var(--txt2);border:.5px solid transparent;transition:.14s}
 .si:hover{background:var(--bg3);color:var(--txt)}
 .si.ac{background:rgba(0,197,122,.09);color:var(--g);border-color:var(--brd)}
-.si.ac.bl{background:rgba(74,143,245,.09);color:var(--b);border-color:var(--brd3)}
+.si.acb{background:rgba(74,143,245,.09);color:var(--b);border-color:var(--brd3)}
+.si.acp{background:rgba(168,85,247,.09);color:var(--p);border-color:var(--brdp)}
 .si .ic{width:14px;font-size:12px;text-align:center;flex-shrink:0}
-.sbd{margin-left:auto;font-size:9px;font-weight:700;padding:1px 5px;border-radius:4px}
-.sbd.g{background:var(--g);color:#000}
-.sbd.b{background:var(--b);color:#fff}
-.sdiv{height:.5px;background:var(--brd2);margin:7px 14px}
+.si .step-n{background:var(--bg4);border-radius:4px;font-size:9px;font-weight:700;padding:1px 5px;margin-left:auto;color:var(--txt3)}
+.si.ac .step-n,.si.acb .step-n,.si.acp .step-n{color:var(--g)}
+.sdiv{height:.5px;background:var(--brd2);margin:6px 14px}
 .sft{margin-top:auto;padding:10px 14px;font-size:10px;color:var(--txt3);border-top:.5px solid var(--brd2);line-height:1.7}
+.sbd{margin-left:auto;font-size:9px;font-weight:700;padding:1px 5px;border-radius:4px}
+.sbd.g{background:var(--g);color:#000}.sbd.b{background:var(--b);color:#fff}.sbd.p{background:var(--p);color:#fff}
 
 /* OVERLAY */
 #ov{display:none;position:fixed;inset:0;z-index:140;background:rgba(0,0,0,.5)}
@@ -57,85 +61,112 @@ body{background:var(--bg);color:var(--txt);font-family:'DM Sans',sans-serif;font
 .pg{display:none;padding:20px 22px 60px}
 .pg.ac{display:block}
 
+/* FLOW BANNER */
+.flow-banner{display:flex;align-items:center;gap:4px;background:var(--bg3);border:.5px solid var(--brd2);border-radius:8px;padding:8px 14px;margin-bottom:16px;flex-wrap:wrap;gap:6px}
+.flow-step{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--txt3)}
+.flow-step.done{color:var(--g)}.flow-step.cur{color:var(--b);font-weight:600}
+.flow-arr{color:var(--txt3);font-size:10px}
+.flow-dot{width:7px;height:7px;border-radius:50%;background:var(--txt3)}
+.flow-dot.done{background:var(--g)}.flow-dot.cur{background:var(--b)}
+
 /* HERO */
-.hero{background:var(--bg3);border:.5px solid var(--brd2);border-radius:12px;padding:16px 20px;margin-bottom:18px;position:relative;overflow:hidden}
+.hero{background:var(--bg3);border:.5px solid var(--brd2);border-radius:12px;padding:16px 20px;margin-bottom:16px;position:relative;overflow:hidden}
 .hero::after{content:'';position:absolute;top:-40px;right:-40px;width:180px;height:180px;background:radial-gradient(circle,rgba(0,197,122,.07) 0%,transparent 70%);pointer-events:none}
 .hero.bl::after{background:radial-gradient(circle,rgba(74,143,245,.07) 0%,transparent 70%)}
-.hey{font-size:10px;color:var(--g);letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px;font-family:'DM Mono',monospace}
-.hero.bl .hey{color:var(--b)}
-.hero h1{font-family:'Syne',sans-serif;font-size:clamp(15px,2.8vw,22px);font-weight:800;letter-spacing:-.02em;line-height:1.15;margin-bottom:4px}
-.hl{color:var(--g)}.hlb{color:var(--b)}
+.hero.pu::after{background:radial-gradient(circle,rgba(168,85,247,.07) 0%,transparent 70%)}
+.hey{font-size:10px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px;font-family:'DM Mono',monospace;color:var(--g)}
+.hero.bl .hey{color:var(--b)}.hero.pu .hey{color:var(--p)}
+.hero h1{font-family:'Syne',sans-serif;font-size:clamp(15px,2.6vw,22px);font-weight:800;letter-spacing:-.02em;line-height:1.15;margin-bottom:4px}
+.hl{color:var(--g)}.hlb{color:var(--b)}.hlp{color:var(--p)}
 .hero-sub{font-size:11px;color:var(--txt2);max-width:520px}
+.client-info{margin-top:10px;padding:8px 12px;background:rgba(0,197,122,.06);border:.5px solid var(--brd);border-radius:8px;font-size:11px;color:var(--txt2);display:flex;gap:20px;flex-wrap:wrap}
+.client-info strong{color:var(--g)}
 
-/* SEC TITLE */
+/* SEC */
 .sc{font-size:10px;font-weight:600;color:var(--g);letter-spacing:.14em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:7px}
 .sc::after{content:'';flex:1;height:.5px;background:var(--brd)}
 .sc.bl{color:var(--b)}.sc.bl::after{background:var(--brd3)}
+.sc.pu{color:var(--p)}.sc.pu::after{background:var(--brdp)}
 
 /* GRIDS */
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
 .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
 .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
 .g5{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
-@media(max-width:900px){.g4,.g5{grid-template-columns:1fr 1fr 1fr}}
+@media(max-width:960px){.g4,.g5{grid-template-columns:1fr 1fr 1fr}}
 @media(max-width:640px){.g3,.g4,.g5{grid-template-columns:1fr 1fr}#mn{margin-left:0!important}#sb{transform:translateX(-100%)}#sb.mob{transform:translateX(0)}}
 @media(max-width:400px){.g2{grid-template-columns:1fr}}
 
 /* CARD */
 .c{background:var(--bg3);border:.5px solid var(--brd2);border-radius:11px;padding:12px 14px}
-.c.cg{border-color:var(--brd)}.c.cb{border-color:var(--brd3)}.c.cr{border-color:rgba(224,82,82,.2)}
+.c.cg{border-color:var(--brd)}.c.cb{border-color:var(--brd3)}.c.cr{border-color:rgba(224,82,82,.2)}.c.cp{border-color:var(--brdp)}
 
 /* METRIC */
 .m{background:var(--bg4);border:.5px solid var(--brd2);border-radius:7px;padding:8px 10px}
-.m.mg{border-color:rgba(0,197,122,.25)}.m.mb{border-color:rgba(74,143,245,.25)}.m.mr{border-color:rgba(224,82,82,.2)}.m.mw{border-color:rgba(245,166,35,.2)}
+.m.mg{border-color:rgba(0,197,122,.25)}.m.mb{border-color:rgba(74,143,245,.25)}.m.mr{border-color:rgba(224,82,82,.2)}.m.mp{border-color:rgba(168,85,247,.25)}.m.mw{border-color:rgba(245,166,35,.2)}
 .ml{font-size:9px;color:var(--txt3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px}
 .mv{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;color:var(--txt);line-height:1.1}
-.mv.g{color:var(--g)}.mv.b{color:var(--b)}.mv.r{color:var(--r)}.mv.w{color:var(--w)}
+.mv.g{color:var(--g)}.mv.b{color:var(--b)}.mv.r{color:var(--r)}.mv.w{color:var(--w)}.mv.p{color:var(--p)}
 .ms{font-size:10px;color:var(--txt3);margin-top:1px}
 
-/* SLIDER */
+/* INPUT FIELDS */
 .sr{display:flex;align-items:center;gap:7px;margin-bottom:7px}
 .sr label{font-size:11px;color:var(--txt2);min-width:148px;flex-shrink:0}
 .sr input[type=range]{flex:1;accent-color:var(--g);cursor:pointer;height:3px}
 .sr.bl input[type=range]{accent-color:var(--b)}
+.sr.pu input[type=range]{accent-color:var(--p)}
 .sv{font-family:'DM Mono',monospace;font-size:11px;color:var(--g);min-width:64px;text-align:right}
-.sv.bl{color:var(--b)}
-select{background:var(--bg4);border:.5px solid var(--brd2);border-radius:7px;color:var(--txt);font-family:'DM Sans',sans-serif;font-size:11px;padding:5px 8px;width:100%}
-select:focus{outline:none;border-color:var(--g)}
+.sv.bl{color:var(--b)}.sv.pu{color:var(--p)}.sv.r{color:var(--r)}
+select,input[type=text],input[type=number]{background:var(--bg4);border:.5px solid var(--brd2);border-radius:7px;color:var(--txt);font-family:'DM Sans',sans-serif;font-size:11px;padding:6px 10px;width:100%}
+select:focus,input[type=text]:focus,input[type=number]:focus{outline:none;border-color:var(--g)}
 
 /* TIP */
 .tip{font-size:11px;color:var(--txt2);background:rgba(0,197,122,.05);border-left:2px solid var(--g);border-radius:0 5px 5px 0;padding:6px 9px;margin-top:7px}
 .tip.r{border-left-color:var(--r);background:rgba(224,82,82,.04)}
 .tip.bl{border-left-color:var(--b);background:rgba(74,143,245,.04)}
+.tip.pu{border-left-color:var(--p);background:rgba(168,85,247,.04)}
 .tip.w{border-left-color:var(--w);background:rgba(245,166,35,.04)}
 
 /* SAV HERO */
 .sv-hero{background:linear-gradient(135deg,rgba(0,197,122,.08),rgba(0,197,122,.02));border:.5px solid var(--brd);border-radius:11px;padding:14px 16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:12px}
 .sv-hero.bl{background:linear-gradient(135deg,rgba(74,143,245,.08),rgba(74,143,245,.02));border-color:var(--brd3)}
-.sv-big{font-family:'Syne',sans-serif;font-size:2.6rem;font-weight:800;color:var(--g);line-height:1}
-.sv-big.bl{color:var(--b)}
+.sv-hero.pu{background:linear-gradient(135deg,rgba(168,85,247,.08),rgba(168,85,247,.02));border-color:var(--brdp)}
+.sv-big{font-family:'Syne',sans-serif;font-size:2.4rem;font-weight:800;color:var(--g);line-height:1}
+.sv-big.bl{color:var(--b)}.sv-big.pu{color:var(--p)}
 .sv-desc{font-size:11px;color:var(--txt2);flex:1;min-width:140px}
 .bw{width:100%}
 .bl-lbl{font-size:10px;color:var(--txt2);margin-bottom:3px;display:flex;justify-content:space-between}
 .bt{height:6px;border-radius:99px;background:rgba(224,82,82,.18);overflow:hidden}
 .bf{height:100%;border-radius:99px;background:var(--g);transition:width .5s cubic-bezier(.4,0,.2,1)}
-.bf.bl{background:var(--b)}
+.bf.bl{background:var(--b)}.bf.pu{background:var(--p)}
+
+/* FIN ROWS */
+.fr-r{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:5px;padding-bottom:5px;border-bottom:.5px solid var(--brd2)}
+.fr-r:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.fr-l{font-size:11px;color:var(--txt2)}
+.fr-v{font-family:'DM Mono',monospace;font-size:11px;font-weight:500}
+.fr-v.g{color:var(--g)}.fr-v.b{color:var(--b)}.fr-v.r{color:var(--r)}.fr-v.w{color:var(--w)}.fr-v.p{color:var(--p)}
+.tot-r{background:rgba(0,197,122,.06);border-radius:7px;padding:6px 9px;margin-top:4px}
+.tot-r.bl{background:rgba(74,143,245,.06)}.tot-r.pu{background:rgba(168,85,247,.06)}
 
 /* BADGES */
 .bd{display:inline-block;font-size:10px;font-weight:500;padding:2px 6px;border-radius:9px}
-.bdg{background:rgba(0,197,122,.13);color:var(--g)}
-.bdb{background:rgba(74,143,245,.13);color:var(--b)}
-.bdr{background:rgba(224,82,82,.11);color:#ff8888}
-.bdw{background:rgba(245,166,35,.13);color:var(--w)}
+.bdg{background:rgba(0,197,122,.13);color:var(--g)}.bdb{background:rgba(74,143,245,.13);color:var(--b)}
+.bdr{background:rgba(224,82,82,.11);color:#ff8888}.bdw{background:rgba(245,166,35,.13);color:var(--w)}
+.bdp{background:rgba(168,85,247,.13);color:var(--p)}
 
 /* TABLE */
 .tb{width:100%;border-collapse:collapse}
 .tb th{font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--txt3);font-weight:500;padding:6px 7px;text-align:left;border-bottom:.5px solid var(--brd2)}
-.tb th.g{color:var(--g)}.tb th.b{color:var(--b)}.tb th.r{color:#ff8888}
+.tb th.g{color:var(--g)}.tb th.b{color:var(--b)}.tb th.r{color:#ff8888}.tb th.p{color:var(--p)}
 .tb td{padding:6px 7px;font-size:11px;color:var(--txt2);border-bottom:.5px solid rgba(255,255,255,.04)}
 .tb td:first-child{color:var(--txt3);font-size:10px}
-.tb td.tg{color:var(--g);font-weight:500}.tb td.tb2{color:var(--b);font-weight:500}.tb td.tr{color:#ff8888}
+.tb td.tg{color:var(--g);font-weight:500}.tb td.tb2{color:var(--b);font-weight:500}.tb td.tr{color:#ff8888}.tb td.tp{color:var(--p);font-weight:500}
 .tb tr:last-child td{border-bottom:none}
+
+/* MACH */
+.mach{background:linear-gradient(135deg,rgba(74,143,245,.06),rgba(74,143,245,.01));border:.5px solid var(--brd3);border-radius:11px;padding:12px 14px}
+.mach.pu{background:linear-gradient(135deg,rgba(168,85,247,.06),rgba(168,85,247,.01));border-color:var(--brdp)}
 
 /* FICHA */
 .fg{display:grid;grid-template-columns:1fr 1fr;gap:6px}
@@ -143,582 +174,657 @@ select:focus{outline:none;border-color:var(--g)}
 .fk{font-size:10px;color:var(--txt3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:1px}
 .fv{font-family:'DM Mono',monospace;font-size:11px;color:var(--txt)}
 
-/* STEP */
-.step{display:flex;align-items:flex-start;gap:9px;padding:8px 11px;background:var(--bg4);border:.5px solid var(--brd2);border-radius:7px}
-.sn{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;min-width:18px;line-height:1.1}
-
 /* VANTAGEM */
 .vl{list-style:none;display:flex;flex-direction:column;gap:5px}
 .vl li{display:flex;align-items:flex-start;gap:6px;font-size:11px;color:var(--txt2);padding:6px 9px;background:var(--bg4);border:.5px solid var(--brd2);border-radius:7px}
-.vl li .i{flex-shrink:0;font-size:12px}
+
+/* GB SELECTOR */
+.gb-sel{display:flex;flex-direction:column;gap:4px;margin-bottom:10px}
+.gb-opt{display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--bg4);border:.5px solid var(--brd2);border-radius:8px;cursor:pointer;transition:.15s}
+.gb-opt:hover,.gb-opt.sel{border-color:var(--b);background:rgba(74,143,245,.08)}
+.gb-opt input{accent-color:var(--b);cursor:pointer}
+.gb-opt .gn{font-family:'DM Mono',monospace;font-size:11px;color:var(--b);font-weight:500;min-width:34px}
+.gb-opt .gd{font-size:11px;color:var(--txt2);flex:1}
+.gb-opt .gv{font-size:10px;color:var(--txt3)}
+
+/* STEP INDICATOR */
+.step-ind{display:flex;align-items:center;gap:6px;margin-bottom:14px}
+.step-circle{width:22px;height:22px;border-radius:50%;background:var(--bg4);border:.5px solid var(--brd2);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--txt3);flex-shrink:0}
+.step-circle.done{background:var(--g);border-color:var(--g);color:#000}
+.step-circle.cur{background:rgba(74,143,245,.2);border-color:var(--b);color:var(--b)}
+.step-line{flex:1;height:.5px;background:var(--brd2)}
+.step-line.done{background:var(--g)}
+
+/* ECO */
+.eco{display:flex;flex-direction:column;align-items:center;text-align:center;padding:10px 6px}
+.eco-n{font-family:'Syne',sans-serif;font-size:1.9rem;font-weight:800;line-height:1;color:var(--g)}
+.eco-n.bl{color:var(--b)}.eco-n.pu{color:var(--p)}
+.eco-l{font-size:10px;color:var(--txt2);margin-top:2px}
+
+/* SUMMARY BAR */
+.sum-bar{background:var(--bg3);border:.5px solid var(--brd2);border-radius:8px;padding:8px 12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.sum-item{display:flex;flex-direction:column;align-items:center;gap:1px}
+.sum-lbl{font-size:9px;color:var(--txt3);text-transform:uppercase;letter-spacing:.06em}
+.sum-val{font-family:'DM Mono',monospace;font-size:12px;font-weight:500;color:var(--txt)}
+.sum-val.g{color:var(--g)}.sum-val.b{color:var(--b)}.sum-val.p{color:var(--p)}.sum-val.r{color:var(--r)}
 
 /* CHART */
 .ch{position:relative;width:100%;height:200px;margin-top:10px}
 
-/* FIN ROWS */
-.fr-r{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:5px;padding-bottom:5px;border-bottom:.5px solid var(--brd2)}
-.fr-r:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
-.fr-l{font-size:11px;color:var(--txt2)}
-.fr-v{font-family:'DM Mono',monospace;font-size:11px;font-weight:500}
-.fr-v.g{color:var(--g)}.fr-v.b{color:var(--b)}.fr-v.r{color:var(--r)}.fr-v.w{color:var(--w)}
-.tot-r{background:rgba(0,197,122,.06);border-radius:7px;padding:6px 9px;margin-top:4px}
-.tot-r.bl{background:rgba(74,143,245,.06)}
+/* PDF OVERLAY */
+#pdf-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:500;align-items:center;justify-content:center}
+#pdf-ov.vis{display:flex}
+.pdf-box{background:var(--bg3);border:.5px solid var(--brd3);border-radius:14px;padding:20px;width:360px;max-width:94vw;max-height:90vh;overflow-y:auto}
+.pdf-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:var(--b);margin-bottom:3px}
+.pdf-sub{font-size:11px;color:var(--txt2);margin-bottom:14px}
+.pdf-field{display:flex;flex-direction:column;gap:3px;margin-bottom:8px}
+.pdf-field label{font-size:10px;color:var(--txt3);text-transform:uppercase;letter-spacing:.06em}
+.pdf-btn{width:100%;padding:9px;border-radius:7px;border:none;font-family:'Syne',sans-serif;font-weight:700;font-size:12px;cursor:pointer;margin-bottom:5px}
+.pdf-btn.pri{background:var(--b);color:#fff}
+.pdf-btn.sec{background:var(--bg4);color:var(--txt2);border:.5px solid var(--brd2)}
 
-/* GIGA SELECTOR */
-.gb-sel{display:flex;flex-direction:column;gap:5px;margin-bottom:10px}
-.gb-opt{display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--bg4);border:.5px solid var(--brd2);border-radius:8px;cursor:pointer;transition:.15s}
-.gb-opt:hover{border-color:var(--b)}
-.gb-opt.sel{background:rgba(74,143,245,.1);border-color:var(--b)}
-.gb-opt input{accent-color:var(--b);cursor:pointer}
-.gb-opt .gn{font-family:'DM Mono',monospace;font-size:11px;color:var(--b);font-weight:500;min-width:36px}
-.gb-opt .gd{font-size:11px;color:var(--txt2)}
-.gb-opt .gv{margin-left:auto;font-size:10px;color:var(--txt3)}
-
-/* ECON BOX */
-.eco{display:flex;flex-direction:column;align-items:center;text-align:center;padding:10px 6px}
-.eco-n{font-family:'Syne',sans-serif;font-size:1.9rem;font-weight:800;line-height:1;color:var(--g)}
-.eco-n.bl{color:var(--b)}
-.eco-l{font-size:10px;color:var(--txt2);margin-top:2px}
-
-/* MACHINE */
-.mach{background:linear-gradient(135deg,rgba(74,143,245,.07),rgba(74,143,245,.01));border:.5px solid var(--brd3);border-radius:11px;padding:12px 14px}
-
-.gap5{display:flex;flex-direction:column;gap:5px}
 .mt8{margin-top:8px}.mt12{margin-top:12px}.mt16{margin-top:16px}
 .mb8{margin-bottom:8px}.mb12{margin-bottom:12px}.mb16{margin-bottom:16px}
-
-/* PDF OVERLAY */
-#pdf-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:500;align-items:center;justify-content:center}
-#pdf-ov.vis{display:flex}
-.pdf-box{background:var(--bg3);border:.5px solid var(--brd3);border-radius:14px;padding:22px;width:340px;max-width:92vw}
-.pdf-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--b);margin-bottom:4px}
-.pdf-sub{font-size:11px;color:var(--txt2);margin-bottom:16px}
-.pdf-field{display:flex;flex-direction:column;gap:4px;margin-bottom:10px}
-.pdf-field label{font-size:10px;color:var(--txt3);text-transform:uppercase;letter-spacing:.06em}
-.pdf-field input{background:var(--bg4);border:.5px solid var(--brd2);border-radius:7px;color:var(--txt);font-family:'DM Sans',sans-serif;font-size:12px;padding:7px 10px}
-.pdf-field input:focus{outline:none;border-color:var(--b)}
-.pdf-btn{width:100%;padding:10px;border-radius:8px;border:none;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:.15s;margin-bottom:6px}
-.pdf-btn.pri{background:var(--b);color:#fff}
-.pdf-btn.pri:hover{background:var(--b2,#2d6fd4)}
-.pdf-btn.sec{background:var(--bg4);color:var(--txt2);border:.5px solid var(--brd2)}
-.pdf-btn.sec:hover{background:var(--bg5)}
+.gap5{display:flex;flex-direction:column;gap:5px}
+@media(min-width:641px){#mn.col{margin-left:0}#sb.col{transform:translateX(-100%)}#ov.vis{display:none}}
 </style>
 </head>
 <body>
 
-<!-- TOPBAR -->
 <div id="tb">
   <button id="hbg" onclick="tglSide()" aria-label="Menu"><span></span><span></span><span></span></button>
   <div class="tbl"><div class="tbl-dot"></div>GigaSmartGlobalPro</div>
   <div class="tbs"></div>
-  <div class="tbt" id="tbt">Calculadora</div>
-  <button class="tb-pdf" onclick="openPdf()">📄 Gerar Proposta PDF</button>
+  <div class="tbt" id="tbt">Início — Dados do Cliente</div>
+  <div class="client-chip" id="chip-cli" style="display:none"><span id="chip-txt">—</span></div>
+  <button class="tb-pdf" onclick="openPdf()">📄 Proposta Unificada</button>
 </div>
 
 <div id="ov" onclick="closeSide()"></div>
 
-<!-- SIDEBAR -->
 <nav id="sb">
-  <div class="ss">Calculadoras</div>
-  <div class="si ac" onclick="showPg('calc',this,'Rendimento & Giga Blocos')">
-    <span class="ic">⬜</span>Blocos + Argamassa
+  <div class="ss">Fluxo da Obra</div>
+  <div class="si ac" onclick="showPg('inicio',this,'Início — Dados do Cliente')">
+    <span class="ic">👤</span>Dados do Cliente<span class="step-n">01</span>
   </div>
-  <div class="si" onclick="showPg('fin',this,'Comparação Financeira')">
-    <span class="ic">💰</span>Financeiro<span class="sbd g">R$</span>
+  <div class="si" onclick="showPg('blocos',this,'Etapa 2 — Blocos e Alvenaria')">
+    <span class="ic">🧱</span>Blocos + Argamassa<span class="step-n">02</span>
+  </div>
+  <div class="si" onclick="showPg('mao-obra',this,'Etapa 3 — Mão de Obra')">
+    <span class="ic">👷</span>Mão de Obra<span class="step-n">03</span>
+  </div>
+  <div class="si" onclick="showPg('pintura',this,'Etapa 4 — Pintura Mecanizada')">
+    <span class="ic">🎨</span>Pintura Mecanizada<span class="step-n">04</span>
   </div>
   <div class="sdiv"></div>
   <div class="ss">Análises</div>
-  <div class="si" onclick="showPg('comp',this,'Comparativo 3 Métodos')">
+  <div class="si" onclick="showPg('financeiro',this,'Análise Financeira Consolidada')">
+    <span class="ic">💰</span>Financeiro<span class="sbd b">R$</span>
+  </div>
+  <div class="si" onclick="showPg('comparativo',this,'Comparativo 3 Métodos')">
     <span class="ic">⚖</span>Comparativo
-  </div>
-  <div class="si" onclick="showPg('etapas',this,'Etapas Eliminadas')">
-    <span class="ic">✂</span>Etapas eliminadas<span class="sbd b">novo</span>
-  </div>
-  <div class="si" onclick="showPg('encargos',this,'Encargos Tributários')">
-    <span class="ic">📑</span>INSS · ISS · Encargos<span class="sbd b">!</span>
-  </div>
-  <div class="si" onclick="showPg('prod',this,'Produtividade')">
-    <span class="ic">📊</span>Produtividade
   </div>
   <div class="sdiv"></div>
   <div class="ss">Referência</div>
   <div class="si" onclick="showPg('ficha',this,'Ficha Técnica')">
     <span class="ic">📋</span>Ficha Técnica
   </div>
-  <div class="sft">
-    Argamassa Polimérica Global<br>
-    <span style="color:#3a5048">(62) 98206-5810 · Goiânia-GO</span>
-  </div>
+  <div class="sft">GigaSmartGlobalPro™<br><span style="color:#3a5048">(62) 98206-5810 · Goiânia-GO</span></div>
 </nav>
 
 <!-- PDF OVERLAY -->
 <div id="pdf-ov">
   <div class="pdf-box">
-    <div class="pdf-title">Gerar Proposta PDF</div>
-    <div class="pdf-sub">Preencha os dados da obra para personalizar a proposta GigaSmartGlobalPro.</div>
-    <div class="pdf-field"><label>Nome do cliente / obra</label><input id="pdf-cliente" type="text" placeholder="Ex: Residência João Silva" value=""></div>
-    <div class="pdf-field"><label>Cidade · Estado</label><input id="pdf-cidade" type="text" placeholder="Ex: Salvador – BA" value=""></div>
-    <div class="pdf-field"><label>Responsável técnico</label><input id="pdf-resp" type="text" placeholder="Ex: Eng. Carlos Oliveira" value=""></div>
-    <div class="pdf-field"><label>Data da proposta</label><input id="pdf-data" type="text" value=""></div>
-    <button class="pdf-btn pri" onclick="gerarPDF()">📄 Gerar e Imprimir</button>
+    <div class="pdf-title">📄 Proposta Unificada</div>
+    <div class="pdf-sub">Consolida todas as etapas da obra em um único documento de viabilidade.</div>
+    <div class="pdf-field"><label>Complemento / Observação</label><input type="text" id="pdf-obs" placeholder="Ex: Proposta revisada em..."></div>
+    <div class="pdf-field"><label>Responsável técnico</label><input type="text" id="pdf-resp" placeholder="Eng. / Arq. responsável"></div>
+    <button class="pdf-btn pri" onclick="gerarPDF()">📄 Gerar e Imprimir PDF</button>
     <button class="pdf-btn sec" onclick="closePdf()">Cancelar</button>
   </div>
 </div>
 
 <div id="mn">
 
-<!-- ===================== PG CALC ===================== -->
-<div id="pg-calc" class="pg ac">
+<!-- =========================================================
+     PG 1 — INÍCIO / CLIENTE
+     ========================================================= -->
+<div id="pg-inicio" class="pg ac">
   <div class="hero">
-    <div class="hey">GigaSmartGlobalPro — Calculadora</div>
-    <h1>Selecione o <span class="hl">Giga Bloco</span><br>e calcule blocos + argamassa</h1>
-    <p class="hero-sub">4 modelos de Giga Bloco com dimensões reais. Calcule unidades, bisnagas, rendimento por m² e dias de obra automaticamente.</p>
+    <div class="hey">GigaSmartGlobalPro™ — Passo 1 de 4</div>
+    <h1>Dados do <span class="hl">cliente</span> e da obra</h1>
+    <p class="hero-sub">Preencha os dados abaixo. Todas as etapas seguintes serão vinculadas a esta análise e consolidadas na proposta final.</p>
   </div>
 
-  <!-- GIGA BLOCO SELECTOR -->
-  <div class="sc bl mt12">Modelo do Giga Bloco</div>
-  <div class="gb-sel mb12">
-    <div class="gb-opt sel" onclick="selGB(0,this)">
-      <input type="radio" name="gb" checked>
-      <span class="gn">GB01</span>
-      <span class="gd">1 × 27 × 14 cm — blocos menores, curvas e detalhes</span>
-      <span class="gv">≈ 13,3 bl/m²</span>
-    </div>
-    <div class="gb-opt" onclick="selGB(1,this)">
-      <input type="radio" name="gb">
-      <span class="gn">GB02</span>
-      <span class="gd">1 × 36 × 14 cm — uso geral, alvenaria interna</span>
-      <span class="gv">≈ 10,0 bl/m²</span>
-    </div>
-    <div class="gb-opt" onclick="selGB(2,this)">
-      <input type="radio" name="gb">
-      <span class="gn">GB03</span>
-      <span class="gd">1 × 54 × 14 cm — paredes longas, maior rendimento</span>
-      <span class="gv">≈ 6,6 bl/m²</span>
-    </div>
-    <div class="gb-opt" onclick="selGB(3,this)">
-      <input type="radio" name="gb">
-      <span class="gn">GB04</span>
-      <span class="gd">1 × 72 × 14 cm — máxima produtividade por pedreiro</span>
-      <span class="gv">≈ 5,0 bl/m²</span>
-    </div>
+  <div class="step-ind">
+    <div class="step-circle cur">1</div><div class="step-line"></div>
+    <div class="step-circle">2</div><div class="step-line"></div>
+    <div class="step-circle">3</div><div class="step-line"></div>
+    <div class="step-circle">4</div>
   </div>
 
-  <!-- PARÂMETROS -->
-  <div class="sc">Parâmetros da obra</div>
+  <div class="sc">Identificação</div>
   <div class="c cg mb12">
-    <div class="sr">
-      <label>Área de alvenaria (m²)</label>
-      <input type="range" min="5" max="2000" step="5" value="100" id="c-area" oninput="calcMain()">
-      <span class="sv" id="c-area-o">100 m²</span>
-    </div>
-    <div class="sr">
-      <label>Pedreiros na equipe</label>
-      <input type="range" min="1" max="20" step="1" value="2" id="c-nped" oninput="calcMain()">
-      <span class="sv" id="c-nped-o">2</span>
-    </div>
-    <div class="sr">
-      <label>Pé-direito médio (m)</label>
-      <input type="range" min="2.2" max="4" step="0.1" value="2.8" id="c-pd" oninput="calcMain()">
-      <span class="sv" id="c-pd-o">2,8 m</span>
-    </div>
-    <div class="sr">
-      <label>Custo unitário bloco (R$)</label>
-      <input type="range" min="1" max="20" step="0.5" value="4" id="c-cblu" oninput="calcMain()">
-      <span class="sv" id="c-cblu-o">R$4,00</span>
-    </div>
-    <div class="sr">
-      <label>Preço bisnaga 3 kg (R$)</label>
-      <input type="range" min="10" max="80" step="1" value="28" id="c-bis-p" oninput="calcMain()">
-      <span class="sv" id="c-bis-p-o">R$28</span>
+    <div class="sr"><label>Nome do cliente / obra</label><input type="text" id="cli-nome" placeholder="Ex: Residência João Silva" oninput="syncCliente()"></div>
+    <div class="sr"><label>Cidade · Estado</label><input type="text" id="cli-cidade" placeholder="Ex: Salvador – BA" oninput="syncCliente()"></div>
+    <div class="sr"><label>Responsável / contato</label><input type="text" id="cli-resp" placeholder="Engenheiro, arquiteto..." oninput="syncCliente()"></div>
+    <div class="sr"><label>Data da proposta</label><input type="text" id="cli-data" placeholder="dd/mm/aaaa" oninput="syncCliente()"></div>
+  </div>
+
+  <div class="sc">Dimensionamento geral da obra</div>
+  <div class="c cg mb12">
+    <div class="sr"><label>Área total construída (m²)</label><input type="range" min="20" max="5000" step="10" value="200" id="ob-area" oninput="syncObra()"><span class="sv" id="ob-area-o">200 m²</span></div>
+    <div class="sr"><label>Área de alvenaria (m²)</label><input type="range" min="20" max="3000" step="10" value="150" id="ob-alv" oninput="syncObra()"><span class="sv" id="ob-alv-o">150 m²</span></div>
+    <div class="sr"><label>Área de pintura (m²)</label><input type="range" min="20" max="6000" step="10" value="320" id="ob-pint" oninput="syncObra()"><span class="sv" id="ob-pint-o">320 m²</span></div>
+    <div class="sr"><label>Pé-direito médio (m)</label><input type="range" min="2.4" max="6" step="0.1" value="2.8" id="ob-pd" oninput="syncObra()"><span class="sv" id="ob-pd-o">2,8 m</span></div>
+    <div class="sr"><label>Nº de pavimentos</label><input type="range" min="1" max="10" step="1" value="1" id="ob-pav" oninput="syncObra()"><span class="sv" id="ob-pav-o">1</span></div>
+    <div style="display:flex;align-items:center;gap:7px;margin-bottom:7px">
+      <label style="font-size:11px;color:var(--txt2);min-width:148px;flex-shrink:0">Tipo de obra</label>
+      <select id="ob-tipo" onchange="syncObra()">
+        <option value="residencial">Residencial unifamiliar</option>
+        <option value="multifamiliar">Residencial multifamiliar</option>
+        <option value="comercial">Comercial / escritório</option>
+        <option value="industrial">Industrial / galpão</option>
+        <option value="reforma">Reforma</option>
+      </select>
     </div>
   </div>
 
-  <!-- RESULTADOS GIGA -->
-  <div class="sc bl">Resultado — Giga Bloco selecionado</div>
-  <div class="g5 mb12" id="res-gb">
-    <div class="m mb"><div class="ml">Modelo</div><div class="mv b" id="r-mod">GB01</div><div class="ms">selecionado</div></div>
-    <div class="m mb"><div class="ml">Dimensão</div><div class="mv b" style="font-size:13px" id="r-dim">1×27×14</div><div class="ms">cm</div></div>
-    <div class="m mb"><div class="ml">Blocos/m²</div><div class="mv b" id="r-bpm2">—</div><div class="ms">pela área</div></div>
-    <div class="m mb"><div class="ml">Total blocos</div><div class="mv b" id="r-btot">—</div><div class="ms">unidades</div></div>
-    <div class="m mb"><div class="ml">Custo blocos</div><div class="mv b" id="r-bcst">—</div><div class="ms">total</div></div>
-  </div>
-  <div class="g4 mb12">
-    <div class="m mg"><div class="ml">Bisnagas 3 kg</div><div class="mv g" id="r-bis">—</div><div class="ms">argamassa Global</div></div>
-    <div class="m mg"><div class="ml">Total kg Global</div><div class="mv g" id="r-kg">—</div><div class="ms">kg de argamassa</div></div>
-    <div class="m mg"><div class="ml">Custo argamassa</div><div class="mv g" id="r-arg-cst">—</div><div class="ms">total</div></div>
-    <div class="m"><div class="ml">Argamassa/bloco</div><div class="mv" id="r-arg-bl">—</div><div class="ms">kg por bloco</div></div>
+  <div class="sc">Resumo geral (atualizado em todas as etapas)</div>
+  <div class="g4 mb12" id="sum-inicio">
+    <div class="m mg"><div class="ml">Área construída</div><div class="mv g" id="si-area">200 m²</div></div>
+    <div class="m mb"><div class="ml">Área alvenaria</div><div class="mv b" id="si-alv">150 m²</div></div>
+    <div class="m mp"><div class="ml">Área pintura</div><div class="mv p" id="si-pint">320 m²</div></div>
+    <div class="m"><div class="ml">Pé-direito</div><div class="mv" id="si-pd">2,8 m</div></div>
   </div>
 
-  <!-- PRODUTIVIDADE -->
-  <div class="sc">Produtividade de assentamento</div>
-  <div id="prod-tip" class="tip bl mb8"></div>
-  <div class="g4 mb8">
-    <div class="m mg"><div class="ml">m²/h equipe (GigaGlobal)</div><div class="mv g" id="r-m2h-g">—</div></div>
-    <div class="m mg"><div class="ml">Dias GigaGlobal</div><div class="mv g" id="r-dias-g">—</div><div class="ms" id="r-dias-g-l">pedreiros</div></div>
-    <div class="m mr"><div class="ml">m²/h equipe (Conv.)</div><div class="mv r" id="r-m2h-t">—</div></div>
-    <div class="m mr"><div class="ml">Dias Convencional</div><div class="mv r" id="r-dias-t">—</div></div>
-  </div>
-  <div class="sv-hero mb8">
-    <div class="sv-big" id="r-econ-dias">—</div>
-    <div class="sv-desc">
-      <div style="font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--txt);margin-bottom:2px">dias economizados vs convencional</div>
-      <div style="font-size:11px;color:var(--txt2)">Ganho de <strong id="r-pct" style="color:var(--g)">—</strong> de produtividade.</div>
-    </div>
-    <div class="bw">
-      <div class="bl-lbl"><span>GigaSmartGlobalPro</span><span id="r-bar-lbl">—</span></div>
-      <div class="bt"><div class="bf" id="r-bar" style="width:0%"></div></div>
-    </div>
-  </div>
-
-  <!-- FABRICAÇÃO IN LOCO -->
-  <div class="sc bl mt12">Fabricação in loco — Máquina de blocos</div>
-  <div class="mach mb8">
-    <div class="g4 mb8">
-      <div class="m mb"><div class="ml">Desforma</div><div class="mv b">5 min</div><div class="ms">pronto p/ assentar</div></div>
-      <div class="m mb"><div class="ml">Capacidade/h</div><div class="mv b" id="f-cap">—</div><div class="ms">blocos/hora</div></div>
-      <div class="m mb"><div class="ml">Produção/dia (8h)</div><div class="mv b" id="f-dia">—</div><div class="ms">blocos/dia</div></div>
-      <div class="m mb"><div class="ml">Dias fabricação</div><div class="mv b" id="f-fab">—</div><div class="ms">para toda obra</div></div>
-    </div>
-    <div class="sr bl">
-      <label>Capacidade máquina (bl/h)</label>
-      <input type="range" min="10" max="120" step="5" value="30" id="c-maq-cap" oninput="calcMain()">
-      <span class="sv bl" id="c-maq-cap-o">30</span>
-    </div>
-    <div class="sr bl">
-      <label>Investimento máquina (R$)</label>
-      <input type="range" min="5000" max="150000" step="1000" value="25000" id="c-maq-inv" oninput="calcMain()">
-      <span class="sv bl" id="c-maq-inv-o">R$25k</span>
-    </div>
-    <div class="tip bl">Giga Bloco fabricado na obra: zero frete, zero quebra no transporte, dimensão exata para cada projeto. Desforma em 5 min e pode ser assentado no mesmo dia com Argamassa Global.</div>
+  <div class="tip">Após preencher os dados acima, avance para <strong>Etapa 2 — Blocos + Argamassa</strong>. Os valores de área serão automaticamente propagados para todas as etapas.</div>
+  <div style="margin-top:12px">
+    <button onclick="showPg('blocos',document.querySelector('.si:nth-child(2)'),'Etapa 2 — Blocos e Alvenaria')" style="background:var(--g);color:#000;border:none;padding:9px 22px;border-radius:8px;font-family:'Syne',sans-serif;font-weight:700;font-size:12px;cursor:pointer">Avançar para Etapa 2 →</button>
   </div>
 </div>
 
-<!-- ===================== PG FINANCEIRO ===================== -->
-<div id="pg-fin" class="pg">
+<!-- =========================================================
+     PG 2 — BLOCOS + ARGAMASSA
+     ========================================================= -->
+<div id="pg-blocos" class="pg">
   <div class="hero bl">
-    <div class="hey">Comparação Financeira — 3 Métodos</div>
-    <h1>Custo real por m²:<br><span class="hlb">Convencional · Global · GigaSmartGlobalPro</span></h1>
-    <p class="hero-sub">Inclui material, mão de obra, encargos tributários (INSS 20% + ISS 3%), betoneira, chapisco, reboco, impermeabilização e tempo improdutivo.</p>
+    <div class="hey">Etapa 2 de 4 — Alvenaria</div>
+    <h1>Giga Blocos + <span class="hlb">Argamassa Global</span></h1>
+    <p class="hero-sub">Selecione o modelo de Giga Bloco e configure os insumos. Os dados de área são carregados da Etapa 1.</p>
+    <div class="client-info" id="ci-blocos"></div>
   </div>
-  <div class="sc bl mt12">Parâmetros gerais</div>
+
+  <div class="step-ind">
+    <div class="step-circle done">✓</div><div class="step-line done"></div>
+    <div class="step-circle cur">2</div><div class="step-line"></div>
+    <div class="step-circle">3</div><div class="step-line"></div>
+    <div class="step-circle">4</div>
+  </div>
+
+  <!-- RESUMO DE ENTRADA -->
+  <div class="sum-bar" id="sum-blocos">
+    <div class="sum-item"><div class="sum-lbl">Cliente</div><div class="sum-val g" id="sb-cli">—</div></div>
+    <div class="sum-item"><div class="sum-lbl">Área alvenaria</div><div class="sum-val b" id="sb-alv">—</div></div>
+    <div class="sum-item"><div class="sum-lbl">Pé-direito</div><div class="sum-val" id="sb-pd">—</div></div>
+    <div class="sum-item"><div class="sum-lbl">Tipo de obra</div><div class="sum-val" id="sb-tipo">—</div></div>
+  </div>
+
+  <div class="sc bl">Modelo do Giga Bloco</div>
+  <div class="gb-sel mb12">
+    <div class="gb-opt sel" onclick="selGB(0,this)"><input type="radio" name="gb" checked><span class="gn">GB01</span><span class="gd">1 × 27 × 14 cm — detalhes, cantos, modulação</span><span class="gv">≈ 13,3 bl/m²</span></div>
+    <div class="gb-opt" onclick="selGB(1,this)"><input type="radio" name="gb"><span class="gn">GB02</span><span class="gd">1 × 36 × 14 cm — uso geral, alvenaria interna</span><span class="gv">≈ 10,0 bl/m²</span></div>
+    <div class="gb-opt" onclick="selGB(2,this)"><input type="radio" name="gb"><span class="gn">GB03</span><span class="gd">1 × 54 × 14 cm — paredes longas, maior rendimento</span><span class="gv">≈ 6,6 bl/m²</span></div>
+    <div class="gb-opt" onclick="selGB(3,this)"><input type="radio" name="gb"><span class="gn">GB04</span><span class="gd">1 × 72 × 14 cm — máxima produtividade</span><span class="gv">≈ 5,0 bl/m²</span></div>
+  </div>
+
+  <div class="sc bl">Preços e parâmetros</div>
   <div class="c cb mb12">
-    <div class="sr bl"><label>Área de alvenaria (m²)</label><input type="range" min="10" max="2000" step="10" value="200" id="f-area" oninput="calcFin()"><span class="sv bl" id="f-area-o">200 m²</span></div>
-    <div class="sr bl"><label>Pedreiros</label><input type="range" min="1" max="20" step="1" value="3" id="f-nped" oninput="calcFin()"><span class="sv bl" id="f-nped-o">3</span></div>
-    <div class="sr bl"><label>Diária pedreiro (R$)</label><input type="range" min="150" max="800" step="10" value="300" id="f-ped" oninput="calcFin()"><span class="sv bl" id="f-ped-o">R$300</span></div>
-    <div class="sr bl"><label>Diária ajudante (R$)</label><input type="range" min="80" max="400" step="10" value="170" id="f-aj" oninput="calcFin()"><span class="sv bl" id="f-aj-o">R$170</span></div>
-    <div class="sr bl"><label>INSS sobre MO (%)</label><input type="range" min="11" max="28" step="1" value="20" id="f-inss" oninput="calcFin()"><span class="sv bl" id="f-inss-o">20%</span></div>
-    <div class="sr bl"><label>ISS sobre MO (%)</label><input type="range" min="2" max="5" step="0.5" value="3" id="f-iss" oninput="calcFin()"><span class="sv bl" id="f-iss-o">3%</span></div>
-    <div class="sr bl"><label>Tempo improdutivo conv. (%)</label><input type="range" min="5" max="30" step="1" value="15" id="f-tp" oninput="calcFin()"><span class="sv bl" id="f-tp-o">15%</span></div>
+    <div class="sr bl"><label>Custo unitário bloco (R$)</label><input type="range" min="1" max="20" step="0.5" value="4" id="bl-cub" oninput="calcBlocos()"><span class="sv bl" id="bl-cub-o">R$ 4,00</span></div>
+    <div class="sr bl"><label>Preço bisnaga 3 kg (R$)</label><input type="range" min="10" max="80" step="1" value="28" id="bl-bis-p" oninput="calcBlocos()"><span class="sv bl" id="bl-bis-p-o">R$ 28</span></div>
+    <div class="sr bl"><label>Margem de segurança (%)</label><input type="range" min="3" max="20" step="1" value="8" id="bl-marg" oninput="calcBlocos()"><span class="sv bl" id="bl-marg-o">8%</span></div>
+    <div class="sr bl"><label>Fator correção superfície</label>
+      <select id="bl-qual" onchange="calcBlocos()" style="flex:1;min-width:0">
+        <option value="1.0">Regular — padrão (×1,00)</option>
+        <option value="0.90">Ruim — irregular / porosa (×0,90)</option>
+        <option value="1.10">Ótima — Giga Bloco (×1,10)</option>
+      </select>
+    </div>
+    <div class="sr bl"><label>Cap. máquina blocos (bl/h)</label><input type="range" min="10" max="120" step="5" value="30" id="bl-maq-cap" oninput="calcBlocos()"><span class="sv bl" id="bl-maq-cap-o">30</span></div>
+    <div class="sr bl"><label>Invest. máquina (R$)</label><input type="range" min="5000" max="150000" step="1000" value="25000" id="bl-maq-inv" oninput="calcBlocos()"><span class="sv bl" id="bl-maq-inv-o">R$ 25k</span></div>
   </div>
-  <div class="g3 mb12">
-    <div class="c cr">
-      <div style="font-family:'Syne',sans-serif;font-size:11px;font-weight:700;color:var(--r);margin-bottom:9px">Convencional</div>
-      <div class="sr"><label>Tijolo (c/100 un, R$)</label><input type="range" min="40" max="250" step="5" value="90" id="f1-bl" oninput="calcFin()"><span class="sv" id="f1-bl-o" style="color:var(--r)">R$90</span></div>
-      <div class="sr"><label>Cimento (sc 50 kg, R$)</label><input type="range" min="20" max="70" step="1" value="36" id="f1-cim" oninput="calcFin()"><span class="sv" id="f1-cim-o" style="color:var(--r)">R$36</span></div>
-      <div class="sr"><label>Qtd. sacos cimento</label><input type="range" min="1" max="100" step="1" value="15" id="f1-cimq" oninput="calcFin()"><span class="sv" id="f1-cimq-o" style="color:var(--r)">15 sc</span></div>
-      <div class="sr"><label>Areia (m³, R$)</label><input type="range" min="60" max="300" step="5" value="130" id="f1-ar" oninput="calcFin()"><span class="sv" id="f1-ar-o" style="color:var(--r)">R$130</span></div>
-      <div class="sr"><label>Qtd. areia (m³)</label><input type="range" min="0.5" max="20" step="0.5" value="3" id="f1-arq" oninput="calcFin()"><span class="sv" id="f1-arq-o" style="color:var(--r)">3,0 m³</span></div>
-      <div class="sr"><label>Betoneira aluguel/dia (R$)</label><input type="range" min="0" max="200" step="5" value="60" id="f1-bet" oninput="calcFin()"><span class="sv" id="f1-bet-o" style="color:var(--r)">R$60</span></div>
-      <div class="sr"><label>Energia betoneira/dia (R$)</label><input type="range" min="0" max="50" step="1" value="8" id="f1-en" oninput="calcFin()"><span class="sv" id="f1-en-o" style="color:var(--r)">R$8</span></div>
-      <div class="sr"><label>Chapisco+emboço+reboco/m²</label><input type="range" min="20" max="120" step="2" value="55" id="f1-reb" oninput="calcFin()"><span class="sv" id="f1-reb-o" style="color:var(--r)">R$55</span></div>
-      <div class="sr"><label>Impermeabiliz./m² (R$)</label><input type="range" min="5" max="50" step="1" value="15" id="f1-imp" oninput="calcFin()"><span class="sv" id="f1-imp-o" style="color:var(--r)">R$15</span></div>
-    </div>
-    <div class="c cg">
-      <div style="font-family:'Syne',sans-serif;font-size:11px;font-weight:700;color:var(--g);margin-bottom:9px">Global Polimérica</div>
-      <div class="sr"><label>Tijolo (c/100 un, R$)</label><input type="range" min="40" max="250" step="5" value="90" id="f2-bl" oninput="calcFin()"><span class="sv" id="f2-bl-o">R$90</span></div>
-      <div class="sr"><label>Preço bisnaga 3 kg (R$)</label><input type="range" min="10" max="80" step="1" value="28" id="f2-bis" oninput="calcFin()"><span class="sv" id="f2-bis-o">R$28</span></div>
-      <div class="sr"><label>Chapisco+emboço+reboco/m²</label><input type="range" min="20" max="120" step="2" value="55" id="f2-reb" oninput="calcFin()"><span class="sv" id="f2-reb-o">R$55</span></div>
-      <div class="sr"><label>Impermeabiliz./m² (R$)</label><input type="range" min="5" max="50" step="1" value="15" id="f2-imp" oninput="calcFin()"><span class="sv" id="f2-imp-o">R$15</span></div>
-      <div class="tip">Elimina: betoneira, ajudante de massa, energia. Chapisco/reboco ainda necessário com tijolo convencional.</div>
-    </div>
+
+  <div class="sc bl">Resultado — blocos e argamassa</div>
+  <div class="g4 mb12">
+    <div class="m mb"><div class="ml">Modelo selecionado</div><div class="mv b" id="rb-mod">GB01</div><div class="ms" id="rb-dim">1×27×14 cm</div></div>
+    <div class="m mb"><div class="ml">Blocos necessários</div><div class="mv b" id="rb-blocos">—</div><div class="ms">c/ margem de segurança</div></div>
+    <div class="m mb"><div class="ml">Custo total blocos</div><div class="mv b" id="rb-cst-bl">—</div><div class="ms">insumos in loco</div></div>
+    <div class="m mb"><div class="ml">Blocos/m²</div><div class="mv b" id="rb-bpm2">—</div><div class="ms">pela dimensão</div></div>
+  </div>
+  <div class="g4 mb12">
+    <div class="m mg"><div class="ml">Bisnagas 3 kg</div><div class="mv g" id="rb-bis">—</div><div class="ms">argamassa Global</div></div>
+    <div class="m mg"><div class="ml">kg argamassa</div><div class="mv g" id="rb-kg">—</div><div class="ms">c/ margem</div></div>
+    <div class="m mg"><div class="ml">Custo argamassa</div><div class="mv g" id="rb-cst-arg">—</div><div class="ms">total</div></div>
+    <div class="m mg"><div class="ml">Arg./bloco</div><div class="mv g" id="rb-arg-bl">—</div><div class="ms">kg por unidade</div></div>
+  </div>
+  <div class="g4 mb12">
+    <div class="m"><div class="ml">Dias fabricação</div><div class="mv" id="rb-fab-dias">—</div><div class="ms">máquina in loco</div></div>
+    <div class="m"><div class="ml">Desforma</div><div class="mv">5 min</div><div class="ms">pronto p/ assentar</div></div>
+    <div class="m mg"><div class="ml">Total material bloco+arg</div><div class="mv g" id="rb-mat-tot">—</div><div class="ms">custo total</div></div>
+    <div class="m mb"><div class="ml">Custo/m² (só material)</div><div class="mv b" id="rb-cst-m2">—</div><div class="ms">alvenaria</div></div>
+  </div>
+  <div class="tip bl" id="bl-tip">—</div>
+  <div style="margin-top:12px"><button onclick="showPg('mao-obra',document.querySelectorAll('.si')[2],'Etapa 3 — Mão de Obra')" style="background:var(--b);color:#fff;border:none;padding:9px 22px;border-radius:8px;font-family:'Syne',sans-serif;font-weight:700;font-size:12px;cursor:pointer">Avançar para Etapa 3 →</button></div>
+</div>
+
+<!-- =========================================================
+     PG 3 — MÃO DE OBRA
+     ========================================================= -->
+<div id="pg-mao-obra" class="pg">
+  <div class="hero bl">
+    <div class="hey">Etapa 3 de 4 — Equipe</div>
+    <h1>Mão de obra + <span class="hlb">Encargos reais</span></h1>
+    <p class="hero-sub">Configure a equipe de assentamento. INSS, ISS e tempo improdutivo calculados automaticamente sobre os dias de obra da Etapa 2.</p>
+    <div class="client-info" id="ci-mo"></div>
+  </div>
+
+  <div class="step-ind">
+    <div class="step-circle done">✓</div><div class="step-line done"></div>
+    <div class="step-circle done">✓</div><div class="step-line done"></div>
+    <div class="step-circle cur">3</div><div class="step-line"></div>
+    <div class="step-circle">4</div>
+  </div>
+
+  <div class="sum-bar">
+    <div class="sum-item"><div class="sum-lbl">Cliente</div><div class="sum-val g" id="smo-cli">—</div></div>
+    <div class="sum-item"><div class="sum-lbl">Área alvenaria</div><div class="sum-val b" id="smo-alv">—</div></div>
+    <div class="sum-item"><div class="sum-lbl">Giga Bloco</div><div class="sum-val b" id="smo-mod">—</div></div>
+    <div class="sum-item"><div class="sum-lbl">Mat. blocos+arg</div><div class="sum-val g" id="smo-mat">—</div></div>
+  </div>
+
+  <div class="g2 mb12">
     <div class="c cb">
-      <div style="font-family:'Syne',sans-serif;font-size:11px;font-weight:700;color:var(--b);margin-bottom:9px">GigaSmartGlobalPro <span class="bd bdb">IDEAL</span></div>
-      <div class="sr bl"><label>Custo insumos bloco/un (R$)</label><input type="range" min="1" max="20" step="0.5" value="4" id="f3-bl" oninput="calcFin()"><span class="sv bl" id="f3-bl-o">R$4</span></div>
-      <div class="sr bl"><label>Preço bisnaga 3 kg (R$)</label><input type="range" min="10" max="80" step="1" value="28" id="f3-bis" oninput="calcFin()"><span class="sv bl" id="f3-bis-o">R$28</span></div>
-      <div class="sr bl"><label>Invest. máquina (R$)</label><input type="range" min="5000" max="150000" step="1000" value="25000" id="f3-maq" oninput="calcFin()"><span class="sv bl" id="f3-maq-o">R$25k</span></div>
-      <div class="sr bl"><label>Amortizar em (obras)</label><input type="range" min="1" max="20" step="1" value="5" id="f3-obr" oninput="calcFin()"><span class="sv bl" id="f3-obr-o">5 obras</span></div>
-      <div class="tip bl">Elimina: chapisco, emboço, reboco, impermeabilização, frete, betoneira, ajudantes. Maior economia total.</div>
+      <div class="sc bl mb8">GigaSmartGlobalPro</div>
+      <div class="sr bl"><label>Pedreiros</label><input type="range" min="1" max="20" step="1" value="2" id="mo-nped-g" oninput="calcMO()"><span class="sv bl" id="mo-nped-g-o">2</span></div>
+      <div class="sr bl"><label>Diária pedreiro (R$)</label><input type="range" min="150" max="800" step="10" value="300" id="mo-ped" oninput="calcMO()"><span class="sv bl" id="mo-ped-o">R$ 300</span></div>
+      <div class="sr bl"><label>INSS patronal (%)</label><input type="range" min="11" max="28" step="1" value="20" id="mo-inss" oninput="calcMO()"><span class="sv bl" id="mo-inss-o">20%</span></div>
+      <div class="sr bl"><label>ISS municipal (%)</label><input type="range" min="2" max="5" step="0.5" value="3" id="mo-iss" oninput="calcMO()"><span class="sv bl" id="mo-iss-o">3%</span></div>
+    </div>
+    <div class="c cr">
+      <div class="sc" style="color:var(--r)" class="mb8">Convencional (para comparar)</div>
+      <div class="sr"><label>Pedreiros conv.</label><input type="range" min="1" max="20" step="1" value="2" id="mo-nped-t" oninput="calcMO()"><span class="sv r" id="mo-nped-t-o">2</span></div>
+      <div class="sr"><label>Ajudantes conv.</label><input type="range" min="1" max="10" step="1" value="2" id="mo-naj-t" oninput="calcMO()"><span class="sv r" id="mo-naj-t-o">2</span></div>
+      <div class="sr"><label>Diária ajudante (R$)</label><input type="range" min="80" max="400" step="10" value="170" id="mo-aj" oninput="calcMO()"><span class="sv r" id="mo-aj-o">R$ 170</span></div>
+      <div class="sr"><label>Tempo improd./dia (h)</label><input type="range" min="0" max="3" step="0.25" value="1.5" id="mo-tp" oninput="calcMO()"><span class="sv r" id="mo-tp-o">1,5 h</span></div>
     </div>
   </div>
 
-  <div class="sc bl">Resultado comparativo</div>
+  <div class="sc bl">Resultado — mão de obra por método</div>
+  <div class="g3 mb12">
+    <div class="c cb">
+      <div style="font-size:11px;font-weight:700;color:var(--b);margin-bottom:8px">GigaSmartGlobalPro</div>
+      <div class="fr-r"><span class="fr-l">Dias de obra</span><span class="fr-v b" id="rmo-g-dias">—</span></div>
+      <div class="fr-r"><span class="fr-l">MO pedreiros</span><span class="fr-v b" id="rmo-g-mo">—</span></div>
+      <div class="fr-r"><span class="fr-l">INSS (20%)</span><span class="fr-v b" id="rmo-g-inss">—</span></div>
+      <div class="fr-r"><span class="fr-l">ISS</span><span class="fr-v b" id="rmo-g-iss">—</span></div>
+      <div class="fr-r"><span class="fr-l">Ajudantes</span><span class="fr-v b">R$ 0,00</span></div>
+      <div class="fr-r"><span class="fr-l">Tempo improd.</span><span class="fr-v b">Zero</span></div>
+      <div class="fr-r tot-r bl"><span class="fr-l" style="color:var(--txt);font-weight:500">Total MO+Enc.</span><span class="fr-v b" style="font-size:13px" id="rmo-g-tot">—</span></div>
+    </div>
+    <div class="c cr">
+      <div style="font-size:11px;font-weight:700;color:var(--r);margin-bottom:8px">Convencional</div>
+      <div class="fr-r"><span class="fr-l">Dias de obra</span><span class="fr-v r" id="rmo-t-dias">—</span></div>
+      <div class="fr-r"><span class="fr-l">MO pedreiros</span><span class="fr-v r" id="rmo-t-mo">—</span></div>
+      <div class="fr-r"><span class="fr-l">INSS</span><span class="fr-v r" id="rmo-t-inss">—</span></div>
+      <div class="fr-r"><span class="fr-l">ISS</span><span class="fr-v r" id="rmo-t-iss">—</span></div>
+      <div class="fr-r"><span class="fr-l">Ajudantes</span><span class="fr-v r" id="rmo-t-aj">—</span></div>
+      <div class="fr-r"><span class="fr-l">Tempo improd. (custo)</span><span class="fr-v r" id="rmo-t-tp">—</span></div>
+      <div class="fr-r tot-r" style="background:rgba(224,82,82,.06)"><span class="fr-l" style="color:var(--txt);font-weight:500">Total MO+Enc.</span><span class="fr-v r" style="font-size:13px" id="rmo-t-tot">—</span></div>
+    </div>
+    <div class="c" style="background:linear-gradient(135deg,rgba(74,143,245,.07),rgba(74,143,245,.01));border-color:var(--brd3)">
+      <div style="font-size:11px;font-weight:700;color:var(--b);margin-bottom:8px">Economia MO</div>
+      <div class="fr-r"><span class="fr-l">Economia total MO</span><span class="fr-v b" id="rmo-econ-mo">—</span></div>
+      <div class="fr-r"><span class="fr-l">Economia INSS+ISS</span><span class="fr-v b" id="rmo-econ-enc">—</span></div>
+      <div class="fr-r"><span class="fr-l">Economia ajudantes</span><span class="fr-v b" id="rmo-econ-aj">—</span></div>
+      <div class="fr-r"><span class="fr-l">Economia tempo improd.</span><span class="fr-v b" id="rmo-econ-tp">—</span></div>
+      <div class="fr-r"><span class="fr-l">Dias economizados</span><span class="fr-v b" id="rmo-econ-dias">—</span></div>
+      <div class="fr-r tot-r bl"><span class="fr-l" style="color:var(--txt);font-weight:500">Total economizado</span><span class="fr-v b" style="font-size:13px" id="rmo-econ-tot">—</span></div>
+    </div>
+  </div>
+  <div class="tip bl" id="mo-tip">—</div>
+  <div style="margin-top:12px"><button onclick="showPg('pintura',document.querySelectorAll('.si')[3],'Etapa 4 — Pintura Mecanizada')" style="background:var(--b);color:#fff;border:none;padding:9px 22px;border-radius:8px;font-family:'Syne',sans-serif;font-weight:700;font-size:12px;cursor:pointer">Avançar para Etapa 4 →</button></div>
+</div>
+
+<!-- =========================================================
+     PG 4 — PINTURA MECANIZADA
+     ========================================================= -->
+<div id="pg-pintura" class="pg">
+  <div class="hero pu">
+    <div class="hey">Etapa 4 de 4 — Pintura</div>
+    <h1>Pintura <span class="hlp">mecanizada</span><br>vs manual</h1>
+    <p class="hero-sub">Área de pintura carregada da Etapa 1. Configure insumos, tipo de tinta, massa e equipamentos. Dados alimentam a proposta final.</p>
+    <div class="client-info" id="ci-pint"></div>
+  </div>
+
+  <div class="step-ind">
+    <div class="step-circle done">✓</div><div class="step-line done"></div>
+    <div class="step-circle done">✓</div><div class="step-line done"></div>
+    <div class="step-circle done">✓</div><div class="step-line done"></div>
+    <div class="step-circle cur">4</div>
+  </div>
+
+  <div class="sum-bar">
+    <div class="sum-item"><div class="sum-lbl">Cliente</div><div class="sum-val g" id="sp-cli">—</div></div>
+    <div class="sum-item"><div class="sum-lbl">Área pintura</div><div class="sum-val p" id="sp-pint">—</div></div>
+    <div class="sum-item"><div class="sum-lbl">Pé-direito</div><div class="sum-val" id="sp-pd">—</div></div>
+    <div class="sum-item"><div class="sum-lbl">MO alvenaria (GigaGlobal)</div><div class="sum-val b" id="sp-mo">—</div></div>
+  </div>
+
+  <div class="g2 mb12">
+    <div class="c cr">
+      <div style="font-size:11px;font-weight:700;color:var(--r);margin-bottom:8px">🖌 Manual — equipe e produção</div>
+      <div class="sr"><label>Pintores</label><input type="range" min="1" max="8" step="1" value="2" id="pm-pint" oninput="calcPintura()"><span class="sv r" id="pm-pint-o">2</span></div>
+      <div class="sr"><label>Ajudantes</label><input type="range" min="1" max="6" step="1" value="2" id="pm-aj" oninput="calcPintura()"><span class="sv r" id="pm-aj-o">2</span></div>
+      <div class="sr"><label>Diária pintor (R$)</label><input type="range" min="150" max="700" step="10" value="280" id="pm-dpint" oninput="calcPintura()"><span class="sv r" id="pm-dpint-o">R$ 280</span></div>
+      <div class="sr"><label>Diária ajudante (R$)</label><input type="range" min="80" max="400" step="10" value="160" id="pm-daj" oninput="calcPintura()"><span class="sv r" id="pm-daj-o">R$ 160</span></div>
+      <div class="sr"><label>Produtividade m²/h/pintor</label><input type="range" min="2" max="12" step="0.5" value="5" id="pm-prod" oninput="calcPintura()"><span class="sv r" id="pm-prod-o">5,0</span></div>
+      <div class="sr"><label>Andaime aluguel/dia (R$)</label><input type="range" min="0" max="500" step="20" value="180" id="pm-and" oninput="calcPintura()"><span class="sv r" id="pm-and-o">R$ 180</span></div>
+      <div class="sr"><label>Limpeza extra/dia (R$)</label><input type="range" min="0" max="200" step="10" value="60" id="pm-limp" oninput="calcPintura()"><span class="sv r" id="pm-limp-o">R$ 60</span></div>
+    </div>
+    <div class="c cp">
+      <div style="font-size:11px;font-weight:700;color:var(--p);margin-bottom:8px">🔧 Mecanizado Airless — equipe</div>
+      <div class="sr pu"><label>Pintores (Airless)</label><input type="range" min="1" max="4" step="1" value="1" id="pme-pint" oninput="calcPintura()"><span class="sv pu" id="pme-pint-o">1</span></div>
+      <div class="sr pu"><label>Ajudantes</label><input type="range" min="0" max="3" step="1" value="1" id="pme-aj" oninput="calcPintura()"><span class="sv pu" id="pme-aj-o">1</span></div>
+      <div class="sr pu"><label>Produtividade m²/h (Airless)</label><input type="range" min="15" max="80" step="5" value="30" id="pme-prod" oninput="calcPintura()"><span class="sv pu" id="pme-prod-o">30</span></div>
+      <div class="sr pu"><label>Energia máquinas/dia (R$)</label><input type="range" min="3" max="40" step="1" value="12" id="pme-en" oninput="calcPintura()"><span class="sv pu" id="pme-en-o">R$ 12</span></div>
+      <div class="sr pu"><label>INSS+ISS sobre MO (%)</label><input type="range" min="11" max="28" step="1" value="23" id="pme-enc" oninput="calcPintura()"><span class="sv pu" id="pme-enc-o">23%</span></div>
+    </div>
+  </div>
+
+  <!-- INSUMOS PINTURA -->
+  <div class="sc pu">Insumos — tipo de material</div>
+  <div class="g2 mb12">
+    <div class="c cp">
+      <div style="font-size:11px;font-weight:700;color:var(--p);margin-bottom:8px">Fundo, massa e selador</div>
+      <div style="display:flex;align-items:center;gap:7px;margin-bottom:7px">
+        <label style="font-size:11px;color:var(--txt2);min-width:148px;flex-shrink:0">Tipo de massa</label>
+        <select id="ins-massa-tipo" onchange="calcPintura()">
+          <option value="corrida">Massa corrida PVA (interna)</option>
+          <option value="acrilica">Massa acrílica (interna/externa)</option>
+          <option value="quartzo">Massa de quartzo / grafiato</option>
+          <option value="nenhuma">Sem massa (já preparada)</option>
+        </select>
+      </div>
+      <div class="sr pu"><label>Massa (kg/m²)</label><input type="range" min="0" max="1.5" step="0.05" value="0.7" id="ins-massa-l" oninput="calcPintura()"><span class="sv pu" id="ins-massa-l-o">0,70 kg</span></div>
+      <div class="sr pu"><label>Preço massa (R$/kg)</label><input type="range" min="2" max="15" step="0.5" value="5" id="ins-massa-p" oninput="calcPintura()"><span class="sv pu" id="ins-massa-p-o">R$ 5</span></div>
+      <div style="display:flex;align-items:center;gap:7px;margin-bottom:7px">
+        <label style="font-size:11px;color:var(--txt2);min-width:148px;flex-shrink:0">Fundo preparador</label>
+        <select id="ins-fundo-tipo" onchange="calcPintura()">
+          <option value="selador">Selador acrílico (geral)</option>
+          <option value="fixador">Fixador de parede (externo)</option>
+          <option value="primer">Primer epóxi (alta umidade)</option>
+          <option value="nenhum">Sem fundo preparador</option>
+        </select>
+      </div>
+      <div class="sr pu"><label>Fundo/selador (L/m²)</label><input type="range" min="0" max="0.2" step="0.01" value="0.09" id="ins-sel-l" oninput="calcPintura()"><span class="sv pu" id="ins-sel-l-o">0,09 L</span></div>
+      <div class="sr pu"><label>Preço fundo (R$/L)</label><input type="range" min="5" max="35" step="1" value="12" id="ins-sel-p" oninput="calcPintura()"><span class="sv pu" id="ins-sel-p-o">R$ 12</span></div>
+    </div>
+    <div class="c cp">
+      <div style="font-size:11px;font-weight:700;color:var(--p);margin-bottom:8px">Tinta e acabamentos</div>
+      <div style="display:flex;align-items:center;gap:7px;margin-bottom:7px">
+        <label style="font-size:11px;color:var(--txt2);min-width:148px;flex-shrink:0">Tipo de tinta</label>
+        <select id="ins-tinta-tipo" onchange="calcPintura()">
+          <option value="latex-fosco">Látex acrílica fosca (água)</option>
+          <option value="latex-acet">Látex acrílica acetinada (água)</option>
+          <option value="esmalte-agua">Esmalte sintético (água)</option>
+          <option value="esmalte-tiner">Esmalte sintético (tíner)</option>
+          <option value="emborrachada">Tinta emborrachada</option>
+          <option value="impermeab">Tinta impermeabilizante</option>
+          <option value="textura">Textura acrílica</option>
+        </select>
+      </div>
+      <div class="sr pu"><label>Tinta 2 demãos (L/m²)</label><input type="range" min="0.1" max="0.5" step="0.01" value="0.17" id="ins-tinta-l" oninput="calcPintura()"><span class="sv pu" id="ins-tinta-l-o">0,17 L</span></div>
+      <div class="sr pu"><label>Preço tinta (R$/L)</label><input type="range" min="8" max="60" step="1" value="18" id="ins-tinta-p" oninput="calcPintura()"><span class="sv pu" id="ins-tinta-p-o">R$ 18</span></div>
+      <div style="display:flex;align-items:center;gap:7px;margin-bottom:7px">
+        <label style="font-size:11px;color:var(--txt2);min-width:148px;flex-shrink:0">Impermeabilizante</label>
+        <select id="ins-imp-tipo" onchange="calcPintura()">
+          <option value="nenhum">Não necessário (Giga Bloco)</option>
+          <option value="flex">Manta líquida flexível</option>
+          <option value="cristal">Cristalizador de concreto</option>
+          <option value="acrilico">Impermeab. acrílico</option>
+        </select>
+      </div>
+      <div class="sr pu"><label>Impermeab. (R$/m²)</label><input type="range" min="0" max="50" step="1" value="0" id="ins-imp-p" oninput="calcPintura()"><span class="sv pu" id="ins-imp-p-o">R$ 0</span></div>
+      <div class="sr pu"><label>Discos lixa girafa (un/10m²)</label><input type="range" min="0.1" max="2" step="0.1" value="0.5" id="ins-lixa-q" oninput="calcPintura()"><span class="sv pu" id="ins-lixa-q-o">0,5</span></div>
+      <div class="sr pu"><label>Preço disco (R$/un)</label><input type="range" min="5" max="40" step="1" value="18" id="ins-lixa-p" oninput="calcPintura()"><span class="sv pu" id="ins-lixa-p-o">R$ 18</span></div>
+    </div>
+  </div>
+
+  <!-- INVESTIMENTOS -->
+  <div class="sc pu">Investimentos em equipamentos</div>
+  <div class="mach pu mb12">
+    <div class="g2">
+      <div>
+        <div class="sr pu"><label>Airless massa/textura (R$)</label><input type="range" min="8000" max="80000" step="1000" value="23000" id="inv-am" oninput="calcPintura()"><span class="sv pu" id="inv-am-o">R$ 23k</span></div>
+        <div class="sr pu"><label>Airless pintura (R$)</label><input type="range" min="5000" max="50000" step="500" value="15000" id="inv-ap" oninput="calcPintura()"><span class="sv pu" id="inv-ap-o">R$ 15k</span></div>
+        <div class="sr pu"><label>Lixadeira girafa+aspirador (R$)</label><input type="range" min="2000" max="20000" step="500" value="7500" id="inv-lx" oninput="calcPintura()"><span class="sv pu" id="inv-lx-o">R$ 7.500</span></div>
+      </div>
+      <div>
+        <div class="sr pu"><label>Berox + desempenadeiras (R$)</label><input type="range" min="200" max="3000" step="100" value="800" id="inv-bx" oninput="calcPintura()"><span class="sv pu" id="inv-bx-o">R$ 800</span></div>
+        <div class="sr pu"><label>Cabos alongadores (R$)</label><input type="range" min="100" max="1000" step="50" value="400" id="inv-cb" oninput="calcPintura()"><span class="sv pu" id="inv-cb-o">R$ 400</span></div>
+        <div class="sr pu"><label>Amortizar em (obras)</label><input type="range" min="1" max="30" step="1" value="8" id="inv-obr" oninput="calcPintura()"><span class="sv pu" id="inv-obr-o">8 obras</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULTADO PINTURA -->
+  <div class="sc pu">Resultado — viabilidade pintura</div>
   <div class="g3 mb12">
     <div class="c cr">
-      <div style="font-size:11px;font-weight:700;color:var(--r);margin-bottom:8px">Convencional — Breakdown</div>
-      <div class="fr-r"><span class="fr-l">Blocos/tijolos</span><span class="fr-v r" id="r1-bl">—</span></div>
-      <div class="fr-r"><span class="fr-l">Material argamassa</span><span class="fr-v r" id="r1-arg">—</span></div>
-      <div class="fr-r"><span class="fr-l">Mão de obra</span><span class="fr-v r" id="r1-mo">—</span></div>
-      <div class="fr-r"><span class="fr-l">Ajudantes</span><span class="fr-v r" id="r1-aj">—</span></div>
-      <div class="fr-r"><span class="fr-l">Betoneira + energia</span><span class="fr-v r" id="r1-bet">—</span></div>
-      <div class="fr-r"><span class="fr-l">Tempo improdutivo</span><span class="fr-v r" id="r1-tp">—</span></div>
-      <div class="fr-r"><span class="fr-l">Chapisco+Reboco</span><span class="fr-v r" id="r1-reb">—</span></div>
-      <div class="fr-r"><span class="fr-l">Impermeabilização</span><span class="fr-v r" id="r1-imp">—</span></div>
-      <div class="fr-r"><span class="fr-l">INSS + ISS (MO)</span><span class="fr-v r" id="r1-enc">—</span></div>
-      <div class="fr-r tot-r" style="background:rgba(224,82,82,.06)"><span class="fr-l" style="color:var(--txt);font-weight:500">TOTAL</span><span class="fr-v r" style="font-size:13px" id="r1-tot">—</span></div>
-      <div class="fr-r mt8"><span class="fr-l">Custo/m²</span><span class="fr-v r" id="r1-m2">—</span></div>
-      <div class="fr-r"><span class="fr-l">Dias de obra</span><span class="fr-v" id="r1-dias">—</span></div>
+      <div style="font-size:11px;font-weight:700;color:var(--r);margin-bottom:8px">Manual — breakdown</div>
+      <div class="fr-r"><span class="fr-l">Dias de obra</span><span class="fr-v r" id="rp-m-dias">—</span></div>
+      <div class="fr-r"><span class="fr-l">Equipe</span><span class="fr-v r" id="rp-m-eq">—</span></div>
+      <div class="fr-r"><span class="fr-l">MO pintores</span><span class="fr-v r" id="rp-m-mop">—</span></div>
+      <div class="fr-r"><span class="fr-l">MO ajudantes</span><span class="fr-v r" id="rp-m-moaj">—</span></div>
+      <div class="fr-r"><span class="fr-l">INSS+ISS</span><span class="fr-v r" id="rp-m-enc">—</span></div>
+      <div class="fr-r"><span class="fr-l">Tinta (+19,4%)</span><span class="fr-v r" id="rp-m-tinta">—</span></div>
+      <div class="fr-r"><span class="fr-l">Massa / selador</span><span class="fr-v r" id="rp-m-massa">—</span></div>
+      <div class="fr-r"><span class="fr-l">Lixas manuais</span><span class="fr-v r" id="rp-m-lixa">—</span></div>
+      <div class="fr-r"><span class="fr-l">Andaime + limpeza</span><span class="fr-v r" id="rp-m-ext">—</span></div>
+      <div class="fr-r"><span class="fr-l">Impermeabilizante</span><span class="fr-v r" id="rp-m-imp">—</span></div>
+      <div class="fr-r tot-r" style="background:rgba(224,82,82,.06)"><span class="fr-l" style="color:var(--txt);font-weight:500">TOTAL</span><span class="fr-v r" style="font-size:13px" id="rp-m-tot">—</span></div>
+      <div class="fr-r mt8"><span class="fr-l">Custo/m²</span><span class="fr-v r" id="rp-m-m2">—</span></div>
     </div>
-    <div class="c cg">
-      <div style="font-size:11px;font-weight:700;color:var(--g);margin-bottom:8px">Global Polimérica — Breakdown</div>
-      <div class="fr-r"><span class="fr-l">Blocos/tijolos</span><span class="fr-v g" id="r2-bl">—</span></div>
-      <div class="fr-r"><span class="fr-l">Bisnagas Global</span><span class="fr-v g" id="r2-bis">—</span></div>
-      <div class="fr-r"><span class="fr-l">Mão de obra</span><span class="fr-v g" id="r2-mo">—</span></div>
-      <div class="fr-r"><span class="fr-l">Ajudantes</span><span class="fr-v g">R$ 0,00</span></div>
-      <div class="fr-r"><span class="fr-l">Betoneira + energia</span><span class="fr-v g">R$ 0,00</span></div>
-      <div class="fr-r"><span class="fr-l">Tempo improdutivo</span><span class="fr-v g">R$ 0,00</span></div>
-      <div class="fr-r"><span class="fr-l">Chapisco+Reboco</span><span class="fr-v g" id="r2-reb">—</span></div>
-      <div class="fr-r"><span class="fr-l">Impermeabilização</span><span class="fr-v g" id="r2-imp">—</span></div>
-      <div class="fr-r"><span class="fr-l">INSS + ISS (MO)</span><span class="fr-v g" id="r2-enc">—</span></div>
-      <div class="fr-r tot-r"><span class="fr-l" style="color:var(--txt);font-weight:500">TOTAL</span><span class="fr-v g" style="font-size:13px" id="r2-tot">—</span></div>
-      <div class="fr-r mt8"><span class="fr-l">Custo/m²</span><span class="fr-v g" id="r2-m2">—</span></div>
-      <div class="fr-r"><span class="fr-l">Dias de obra</span><span class="fr-v" id="r2-dias">—</span></div>
+    <div class="c cp">
+      <div style="font-size:11px;font-weight:700;color:var(--p);margin-bottom:8px">Mecanizado — breakdown</div>
+      <div class="fr-r"><span class="fr-l">Dias de obra</span><span class="fr-v p" id="rp-e-dias">—</span></div>
+      <div class="fr-r"><span class="fr-l">Equipe</span><span class="fr-v p" id="rp-e-eq">—</span></div>
+      <div class="fr-r"><span class="fr-l">MO pintores</span><span class="fr-v p" id="rp-e-mop">—</span></div>
+      <div class="fr-r"><span class="fr-l">MO ajudantes</span><span class="fr-v p" id="rp-e-moaj">—</span></div>
+      <div class="fr-r"><span class="fr-l">INSS+ISS</span><span class="fr-v p" id="rp-e-enc">—</span></div>
+      <div class="fr-r"><span class="fr-l">Tinta (sem desperdício)</span><span class="fr-v p" id="rp-e-tinta">—</span></div>
+      <div class="fr-r"><span class="fr-l">Massa / selador</span><span class="fr-v p" id="rp-e-massa">—</span></div>
+      <div class="fr-r"><span class="fr-l">Discos lixa</span><span class="fr-v p" id="rp-e-lixa">—</span></div>
+      <div class="fr-r"><span class="fr-l">Andaime</span><span class="fr-v p">R$ 0,00 ✓</span></div>
+      <div class="fr-r"><span class="fr-l">Impermeabilizante</span><span class="fr-v p" id="rp-e-imp">—</span></div>
+      <div class="fr-r"><span class="fr-l">Energia + amort. equip.</span><span class="fr-v p" id="rp-e-equip">—</span></div>
+      <div class="fr-r tot-r pu"><span class="fr-l" style="color:var(--txt);font-weight:500">TOTAL</span><span class="fr-v p" style="font-size:13px" id="rp-e-tot">—</span></div>
+      <div class="fr-r mt8"><span class="fr-l">Custo/m²</span><span class="fr-v p" id="rp-e-m2">—</span></div>
     </div>
-    <div class="c cb">
-      <div style="font-size:11px;font-weight:700;color:var(--b);margin-bottom:8px">GigaSmartGlobalPro — Breakdown</div>
-      <div class="fr-r"><span class="fr-l">Blocos (insumos)</span><span class="fr-v b" id="r3-bl">—</span></div>
-      <div class="fr-r"><span class="fr-l">Bisnagas Global</span><span class="fr-v b" id="r3-bis">—</span></div>
-      <div class="fr-r"><span class="fr-l">Mão de obra</span><span class="fr-v b" id="r3-mo">—</span></div>
-      <div class="fr-r"><span class="fr-l">Ajudantes</span><span class="fr-v b">R$ 0,00</span></div>
-      <div class="fr-r"><span class="fr-l">Amort. máquina</span><span class="fr-v b" id="r3-maq">—</span></div>
-      <div class="fr-r"><span class="fr-l">Chapisco+Reboco</span><span class="fr-v b">✓ ELIMINADO</span></div>
-      <div class="fr-r"><span class="fr-l">Impermeabilização</span><span class="fr-v b">✓ ELIMINADO</span></div>
-      <div class="fr-r"><span class="fr-l">INSS + ISS (MO)</span><span class="fr-v b" id="r3-enc">—</span></div>
-      <div class="fr-r tot-r bl"><span class="fr-l" style="color:var(--txt);font-weight:500">TOTAL</span><span class="fr-v b" style="font-size:13px" id="r3-tot">—</span></div>
-      <div class="fr-r mt8"><span class="fr-l">Custo/m²</span><span class="fr-v b" id="r3-m2">—</span></div>
-      <div class="fr-r"><span class="fr-l">Dias de obra</span><span class="fr-v" id="r3-dias">—</span></div>
+    <div class="c" style="background:linear-gradient(135deg,rgba(168,85,247,.07),rgba(168,85,247,.01));border-color:var(--brdp)">
+      <div style="font-size:11px;font-weight:700;color:var(--p);margin-bottom:8px">Economia pintura</div>
+      <div class="fr-r"><span class="fr-l">Economia total</span><span class="fr-v p" id="rp-econ-tot">—</span></div>
+      <div class="fr-r"><span class="fr-l">Economia/m²</span><span class="fr-v p" id="rp-econ-m2">—</span></div>
+      <div class="fr-r"><span class="fr-l">Redução %</span><span class="fr-v p" id="rp-econ-pct">—</span></div>
+      <div class="fr-r"><span class="fr-l">Dias economizados</span><span class="fr-v p" id="rp-econ-dias">—</span></div>
+      <div class="fr-r"><span class="fr-l">Econ. tinta (19,4%)</span><span class="fr-v p" id="rp-econ-tinta">—</span></div>
+      <div class="fr-r"><span class="fr-l">Econ. MO</span><span class="fr-v p" id="rp-econ-mo">—</span></div>
+      <div class="fr-r"><span class="fr-l">Econ. andaimes</span><span class="fr-v p" id="rp-econ-and">—</span></div>
+      <div class="fr-r"><span class="fr-l">Ganho de velocidade</span><span class="fr-v p" id="rp-vel">—</span></div>
+      <div class="fr-r"><span class="fr-l">Payback máquinas</span><span class="fr-v w" id="rp-payback">—</span></div>
     </div>
   </div>
-  <div class="g3 mb12">
-    <div class="c" style="background:linear-gradient(135deg,rgba(0,197,122,.07),rgba(0,197,122,.01));border-color:var(--brd)"><div class="eco"><div class="eco-n" id="fe-g">—</div><div class="eco-l">economia Global vs Conv.</div><div style="font-size:10px;color:var(--txt3);margin-top:2px" id="fe-g-p">—</div></div></div>
-    <div class="c" style="background:linear-gradient(135deg,rgba(74,143,245,.07),rgba(74,143,245,.01));border-color:var(--brd3)"><div class="eco"><div class="eco-n bl" id="fe-b">—</div><div class="eco-l">economia GigaGlobal vs Conv.</div><div style="font-size:10px;color:var(--txt3);margin-top:2px" id="fe-b-p">—</div></div></div>
-    <div class="c" style="background:linear-gradient(135deg,rgba(74,143,245,.07),rgba(74,143,245,.01));border-color:var(--brd3)"><div class="eco"><div class="eco-n bl" id="fe-m2">—</div><div class="eco-l">economia/m² GigaGlobal vs Conv.</div><div style="font-size:10px;color:var(--txt3);margin-top:2px" id="fe-m2-d">—</div></div></div>
+  <div class="tip pu" id="pt-tip">—</div>
+  <div style="margin-top:12px"><button onclick="showPg('financeiro',document.querySelectorAll('.si')[4],'Análise Financeira Consolidada')" style="background:var(--p);color:#fff;border:none;padding:9px 22px;border-radius:8px;font-family:'Syne',sans-serif;font-weight:700;font-size:12px;cursor:pointer">Ver Análise Consolidada →</button></div>
+</div>
+
+<!-- =========================================================
+     PG 5 — FINANCEIRO CONSOLIDADO
+     ========================================================= -->
+<div id="pg-financeiro" class="pg">
+  <div class="hero bl">
+    <div class="hey">Análise Financeira Consolidada</div>
+    <h1>Resumo completo:<br><span class="hlb">toda a obra em um único número</span></h1>
+    <p class="hero-sub">Consolida Etapas 1–4: blocos, argamassa, mão de obra, encargos e pintura mecanizada em uma única análise de viabilidade.</p>
+    <div class="client-info" id="ci-fin"></div>
   </div>
-  <div class="sc bl">Gráfico — composição de custos</div>
+
+  <div class="sum-bar" id="sum-fin">
+    <div class="sum-item"><div class="sum-lbl">Cliente</div><div class="sum-val g" id="sf-cli">—</div></div>
+    <div class="sum-item"><div class="sum-lbl">Área construída</div><div class="sum-val b" id="sf-area">—</div></div>
+    <div class="sum-item"><div class="sum-lbl">Alvenaria</div><div class="sum-val b" id="sf-alv">—</div></div>
+    <div class="sum-item"><div class="sum-lbl">Pintura</div><div class="sum-val p" id="sf-pint">—</div></div>
+    <div class="sum-item"><div class="sum-lbl">Giga Bloco</div><div class="sum-val b" id="sf-mod">—</div></div>
+  </div>
+
+  <div class="sc bl">GigaSmartGlobalPro — Total consolidado</div>
+  <div class="g4 mb12">
+    <div class="m mb"><div class="ml">Blocos + Argamassa</div><div class="mv b" id="cf-mat">—</div><div class="ms">material alvenaria</div></div>
+    <div class="m mb"><div class="ml">MO + Encargos (alv.)</div><div class="mv b" id="cf-mo">—</div><div class="ms">pedreiros+INSS+ISS</div></div>
+    <div class="m mp"><div class="ml">Pintura mecanizada</div><div class="mv p" id="cf-pint">—</div><div class="ms">total pintura</div></div>
+    <div class="m mg"><div class="ml">TOTAL OBRA (GigaGlobal)</div><div class="mv g" id="cf-tot-g">—</div><div class="ms">método avançado</div></div>
+  </div>
+
+  <div class="sc" style="color:var(--r)">Convencional — Total comparativo</div>
+  <div class="g4 mb12">
+    <div class="m mr"><div class="ml">Blocos + Argamassa</div><div class="mv r" id="cf-mat-t">—</div><div class="ms">tijolo+argamassa conv.</div></div>
+    <div class="m mr"><div class="ml">MO + Encargos (alv.)</div><div class="mv r" id="cf-mo-t">—</div><div class="ms">pedreiros+aj.+INSS+ISS</div></div>
+    <div class="m mr"><div class="ml">Pintura manual</div><div class="mv r" id="cf-pint-t">—</div><div class="ms">total pintura manual</div></div>
+    <div class="m mr"><div class="ml">TOTAL OBRA (Conv.)</div><div class="mv r" id="cf-tot-t">—</div><div class="ms">método convencional</div></div>
+  </div>
+
+  <div class="sv-hero bl mb12">
+    <div class="sv-big bl" id="cf-econ">—</div>
+    <div class="sv-desc">
+      <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--txt);margin-bottom:2px">economia total GigaSmartGlobalPro vs Convencional</div>
+      <div style="font-size:11px;color:var(--txt2)">Redução de <strong id="cf-pct" style="color:var(--b)">—</strong> no custo total da obra. <strong id="cf-m2" style="color:var(--b)">—</strong> por m² construído.</div>
+    </div>
+    <div class="bw">
+      <div class="bl-lbl"><span>GigaSmartGlobalPro mais econômico</span><span id="cf-bar-lbl">—</span></div>
+      <div class="bt"><div class="bf bl" id="cf-bar" style="width:0%"></div></div>
+    </div>
+  </div>
+
+  <div class="sc bl">Breakdown detalhado</div>
+  <div class="c mb12" style="overflow-x:auto">
+    <table class="tb">
+      <thead><tr><th style="width:30%">Item de custo</th><th class="b">GigaSmartGlobalPro</th><th class="r">Convencional</th><th class="g">Economia</th></tr></thead>
+      <tbody>
+        <tr><td>Blocos / tijolos</td><td class="tb2" id="ctb-bl-g">—</td><td class="tr" id="ctb-bl-t">—</td><td class="tg" id="ctb-bl-e">—</td></tr>
+        <tr><td>Argamassa</td><td class="tb2" id="ctb-arg-g">—</td><td class="tr" id="ctb-arg-t">—</td><td class="tg" id="ctb-arg-e">—</td></tr>
+        <tr><td>MO pedreiros (alv.)</td><td class="tb2" id="ctb-mo-g">—</td><td class="tr" id="ctb-mo-t">—</td><td class="tg" id="ctb-mo-e">—</td></tr>
+        <tr><td>Ajudantes (alv.)</td><td class="tb2">R$ 0,00</td><td class="tr" id="ctb-aj-t">—</td><td class="tg" id="ctb-aj-e">—</td></tr>
+        <tr><td>INSS+ISS (alv.)</td><td class="tb2" id="ctb-enc-g">—</td><td class="tr" id="ctb-enc-t">—</td><td class="tg" id="ctb-enc-e">—</td></tr>
+        <tr><td>Chapisco+reboco (alv.)</td><td class="tb2">✓ Eliminado</td><td class="tr" id="ctb-reb-t">—</td><td class="tg" id="ctb-reb-e">—</td></tr>
+        <tr><td>Pintura — MO</td><td class="tb2" id="ctb-pmo-g">—</td><td class="tr" id="ctb-pmo-t">—</td><td class="tg" id="ctb-pmo-e">—</td></tr>
+        <tr><td>Pintura — insumos</td><td class="tb2" id="ctb-pins-g">—</td><td class="tr" id="ctb-pins-t">—</td><td class="tg" id="ctb-pins-e">—</td></tr>
+        <tr><td>Andaimes (pintura)</td><td class="tb2">✓ Eliminado</td><td class="tr" id="ctb-and-t">—</td><td class="tg" id="ctb-and-e">—</td></tr>
+        <tr><td>Amort. máquinas</td><td class="tb2" id="ctb-maq-g">—</td><td class="tr">—</td><td class="tg">incluso</td></tr>
+        <tr style="font-weight:700"><td><strong>TOTAL GERAL</strong></td><td class="tb2" style="font-size:13px" id="ctb-tot-g">—</td><td class="tr" style="font-size:13px" id="ctb-tot-t">—</td><td class="tg" style="font-size:13px" id="ctb-tot-e">—</td></tr>
+        <tr><td>Custo/m² construído</td><td class="tb2" id="ctb-m2-g">—</td><td class="tr" id="ctb-m2-t">—</td><td class="tg" id="ctb-m2-e">—</td></div></tr>
+        <tr><td>Dias totais de obra</td><td class="tb2" id="ctb-dias-g">—</td><td class="tr" id="ctb-dias-t">—</td><td class="tg" id="ctb-dias-e">—</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sc bl">Gráfico consolidado</div>
   <div class="c mb12"><div class="ch" style="height:220px"><canvas id="finChart"></canvas></div></div>
   <div class="tip bl" id="fin-tip">—</div>
 </div>
 
-<!-- ===================== PG COMP ===================== -->
-<div id="pg-comp" class="pg">
-  <div class="hero bl"><div class="hey">Comparativo Técnico</div><h1>3 métodos <span class="hlb">lado a lado</span></h1><p class="hero-sub">Análise técnica completa incluindo encargos, tempo improdutivo e custos ocultos do método convencional.</p></div>
+<!-- =========================================================
+     PG 6 — COMPARATIVO
+     ========================================================= -->
+<div id="pg-comparativo" class="pg">
+  <div class="hero bl"><div class="hey">Comparativo Técnico</div><h1>3 métodos <span class="hlb">lado a lado</span></h1><p class="hero-sub">Análise técnica comparando Convencional, Global Polimérica e GigaSmartGlobalPro completo.</p></div>
   <div class="sc bl mt12">Tabela comparativa</div>
   <div class="c mb12" style="overflow-x:auto">
     <table class="tb">
-      <thead><tr><th style="width:28%">Critério</th><th class="r">Convencional</th><th class="g">Global</th><th class="b">GigaSmartGlobalPro</th></tr></thead>
+      <thead><tr><th style="width:28%">Critério</th><th class="r">Convencional</th><th class="g">Global Polimérica</th><th class="b">GigaSmartGlobalPro</th></tr></thead>
       <tbody>
-        <tr><td>Bloco/m² (GB01)</td><td class="tr">35 (tijolo)</td><td class="tg">35 (tijolo)</td><td class="tb2">13,3 blocos</td></tr>
-        <tr><td>Bloco/m² (GB02)</td><td class="tr">—</td><td class="tg">—</td><td class="tb2">10,0 blocos</td></tr>
-        <tr><td>Bloco/m² (GB03)</td><td class="tr">—</td><td class="tg">—</td><td class="tb2">6,6 blocos</td></tr>
-        <tr><td>Bloco/m² (GB04)</td><td class="tr">—</td><td class="tg">—</td><td class="tb2">5,0 blocos</td></tr>
-        <tr><td>m²/pedreiro/dia</td><td class="tr">7,4 m²</td><td class="tg">12 m²</td><td class="tb2">19 m² (GB04)</td></tr>
-        <tr><td>Ganho produtividade</td><td class="tr">—</td><td class="tg"><span class="bd bdg">+62%</span></td><td class="tb2"><span class="bd bdb">+157% (GB04)</span></td></tr>
-        <tr><td>Tempo improdutivo</td><td class="tr">10–20% da jornada</td><td class="tg"><span class="bd bdg">Zero</span></td><td class="tb2"><span class="bd bdb">Zero</span></td></tr>
-        <tr><td>Betoneira + operador</td><td class="tr">Obrigatório</td><td class="tg"><span class="bd bdg">Eliminado</span></td><td class="tb2"><span class="bd bdb">Eliminado</span></td></tr>
-        <tr><td>Energia betoneira</td><td class="tr">R$ 6–12/dia</td><td class="tg"><span class="bd bdg">Zero</span></td><td class="tb2"><span class="bd bdb">Zero</span></td></tr>
-        <tr><td>Ajudante de massa</td><td class="tr">1–2 por equipe</td><td class="tg"><span class="bd bdg">Eliminado</span></td><td class="tb2"><span class="bd bdb">Eliminado</span></td></tr>
-        <tr><td>Chapisco</td><td class="tr">R$ 8–12/m²</td><td class="tg">Necessário</td><td class="tb2"><span class="bd bdb">Eliminado</span></td></tr>
-        <tr><td>Emboço</td><td class="tr">R$ 15–25/m²</td><td class="tg">Necessário</td><td class="tb2"><span class="bd bdb">Eliminado</span></td></tr>
-        <tr><td>Reboco</td><td class="tr">R$ 20–40/m²</td><td class="tg">Necessário</td><td class="tb2"><span class="bd bdb">Eliminado</span></td></tr>
-        <tr><td>Impermeabilização</td><td class="tr">R$ 10–20/m²</td><td class="tg">Necessário</td><td class="tb2"><span class="bd bdb">Integrada</span></td></tr>
-        <tr><td>Frete blocos</td><td class="tr">Sim — custo variável</td><td class="tg">Sim</td><td class="tb2"><span class="bd bdb">Eliminado</span></td></tr>
-        <tr><td>INSS s/ MO extra (dias a mais)</td><td class="tr">Alto — mais dias = mais INSS</td><td class="tg">Médio</td><td class="tb2"><span class="bd bdb">Mínimo</span></td></tr>
-        <tr><td>ISS s/ MO extra</td><td class="tr">2–5% sobre MO total</td><td class="tg">Menor (menos dias)</td><td class="tb2"><span class="bd bdb">Mínimo</span></td></tr>
-        <tr><td>Desperdício argamassa</td><td class="tr">15–25%</td><td class="tg"><span class="bd bdg">Mínimo</span></td><td class="tb2"><span class="bd bdb">Mínimo</span></td></tr>
+        <tr><td>m²/pedreiro/dia (alv.)</td><td class="tr">7,4 m²</td><td class="tg">12 m²</td><td class="tb2">19 m² (GB04)</td></tr>
+        <tr><td>Chapisco+reboco</td><td class="tr">Obrigatório</td><td class="tg">Necessário</td><td class="tb2"><span class="bd bdb">Eliminado</span></td></tr>
+        <tr><td>Impermeabilização</td><td class="tr">Necessária</td><td class="tg">Necessária</td><td class="tb2"><span class="bd bdb">Integrada</span></td></tr>
+        <tr><td>Frete de blocos</td><td class="tr">Sim</td><td class="tg">Sim</td><td class="tb2"><span class="bd bdb">Eliminado</span></td></tr>
+        <tr><td>Pintura m²/h</td><td class="tr">~5 m²/h (rolo)</td><td class="tg">~5 m²/h</td><td class="tb2"><span class="bd bdb">30+ m²/h (Airless)</span></td></tr>
+        <tr><td>Consumo de tinta</td><td class="tr">+19,4% desperdício</td><td class="tg">+19,4%</td><td class="tb2"><span class="bd bdb">Zero desperdício</span></td></tr>
+        <tr><td>Andaime (pé-direito alto)</td><td class="tr">Obrigatório</td><td class="tg">Obrigatório</td><td class="tb2"><span class="bd bdb">Cabo alongador</span></td></tr>
+        <tr><td>Equipe pintura</td><td class="tr">4+ pessoas</td><td class="tg">4+ pessoas</td><td class="tb2"><span class="bd bdb">2 pessoas</span></td></tr>
+        <tr><td>Sujeira lixamento</td><td class="tr">Alta</td><td class="tg">Alta</td><td class="tb2"><span class="bd bdb">Zero (aspirador)</span></td></tr>
+        <tr><td>INSS+ISS sobre MO</td><td class="tr">Alto (mais dias)</td><td class="tg">Médio</td><td class="tb2"><span class="bd bdb">Mínimo</span></td></tr>
+        <tr><td>Custo/m² alv. (mat.)</td><td class="tr">R$ 45–80</td><td class="tg">R$ 30–55</td><td class="tb2">R$ 20–38</td></tr>
+        <tr><td>Custo/m² pintura</td><td class="tr">R$ 25–50</td><td class="tg">R$ 25–50</td><td class="tb2">R$ 12–28</td></tr>
       </tbody>
     </table>
   </div>
 </div>
 
-<!-- ===================== PG ETAPAS ===================== -->
-<div id="pg-etapas" class="pg">
-  <div class="hero bl"><div class="hey">Etapas Eliminadas</div><h1>O que o <span class="hlb">GigaSmartGlobalPro</span> elimina?</h1><p class="hero-sub">Quantifique o custo e o tempo de cada etapa eliminada pelo sistema GigaBloco + Argamassa Global.</p></div>
-  <div class="sc bl mt12">Parâmetros</div>
-  <div class="mach mb12">
-    <div class="sr bl"><label>Área total de paredes (m²)</label><input type="range" min="10" max="2000" step="10" value="200" id="e-area" oninput="calcEtapas()"><span class="sv bl" id="e-area-o">200 m²</span></div>
-    <div class="sr bl"><label>Pedreiros</label><input type="range" min="1" max="10" step="1" value="2" id="e-nped" oninput="calcEtapas()"><span class="sv bl" id="e-nped-o">2</span></div>
-    <div class="sr bl"><label>Chapisco/m² (mat+MO, R$)</label><input type="range" min="5" max="25" step="1" value="10" id="e-chap" oninput="calcEtapas()"><span class="sv bl" id="e-chap-o">R$10</span></div>
-    <div class="sr bl"><label>Emboço/m² (mat+MO, R$)</label><input type="range" min="10" max="40" step="1" value="20" id="e-emb" oninput="calcEtapas()"><span class="sv bl" id="e-emb-o">R$20</span></div>
-    <div class="sr bl"><label>Reboco/m² (mat+MO, R$)</label><input type="range" min="15" max="60" step="1" value="25" id="e-reb" oninput="calcEtapas()"><span class="sv bl" id="e-reb-o">R$25</span></div>
-    <div class="sr bl"><label>Impermeabiliz./m² (R$)</label><input type="range" min="5" max="50" step="1" value="15" id="e-imp" oninput="calcEtapas()"><span class="sv bl" id="e-imp-o">R$15</span></div>
-    <div class="sr bl"><label>Frete blocos (R$)</label><input type="range" min="0" max="15000" step="200" value="1500" id="e-fret" oninput="calcEtapas()"><span class="sv bl" id="e-fret-o">R$1.500</span></div>
-    <div class="sr bl"><label>Tempo improd./dia betoneira (h)</label><input type="range" min="0.5" max="3" step="0.25" value="1.5" id="e-tp" oninput="calcEtapas()"><span class="sv bl" id="e-tp-o">1,5 h</span></div>
-    <div class="sr bl"><label>Diária ajudante (R$)</label><input type="range" min="80" max="400" step="10" value="170" id="e-aj" oninput="calcEtapas()"><span class="sv bl" id="e-aj-o">R$170</span></div>
-  </div>
-  <div class="g5 mb12">
-    <div class="m mb"><div class="ml">Chapisco</div><div class="mv b" id="er-chap">—</div><div class="ms">eliminado</div></div>
-    <div class="m mb"><div class="ml">Emboço</div><div class="mv b" id="er-emb">—</div><div class="ms">eliminado</div></div>
-    <div class="m mb"><div class="ml">Reboco</div><div class="mv b" id="er-reb">—</div><div class="ms">eliminado</div></div>
-    <div class="m mb"><div class="ml">Impermeabiliz.</div><div class="mv b" id="er-imp">—</div><div class="ms">eliminada</div></div>
-    <div class="m mb"><div class="ml">Frete + outros</div><div class="mv b" id="er-fret">—</div><div class="ms">eliminado</div></div>
-  </div>
-  <div class="g4 mb12">
-    <div class="m mb"><div class="ml">Tempo improd. total</div><div class="mv b" id="er-tp">—</div><div class="ms">horas eliminadas</div></div>
-    <div class="m mb"><div class="ml">Custo tempo improd.</div><div class="mv b" id="er-tp-cst">—</div><div class="ms">MO perdida</div></div>
-    <div class="m mb"><div class="ml">Dias chapisco el.</div><div class="mv b" id="er-d-chap">—</div><div class="ms">1 pedreiro</div></div>
-    <div class="m mb"><div class="ml">Dias reboco el.</div><div class="mv b" id="er-d-reb">—</div><div class="ms">1 pedreiro</div></div>
-  </div>
-  <div class="sv-hero bl mb8">
-    <div class="sv-big bl" id="er-total">—</div>
-    <div class="sv-desc"><div style="font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--txt);margin-bottom:2px">total economizado pelo GigaSmartGlobalPro</div><div style="font-size:11px;color:var(--txt2)"><strong id="er-m2" style="color:var(--b)">—</strong> por m² de parede.</div></div>
-    <div class="bw"><div class="bl-lbl"><span>Etapas eliminadas</span><span id="er-pct">—</span></div><div class="bt"><div class="bf bl" id="er-bar" style="width:60%"></div></div></div>
-  </div>
-  <div class="tip bl" id="er-tip">—</div>
-  <div class="sc bl mt12">Referência: custo por etapa</div>
-  <div class="c mt8"><table class="tb"><thead><tr><th>Etapa</th><th>Custo médio/m²</th><th>Com GigaSmartGlobalPro</th><th>Prazo mínimo</th></tr></thead>
-  <tbody>
-    <tr><td>Chapisco</td><td class="tr">R$ 8–12/m²</td><td class="tb2">Zero</td><td class="tr">3 dias cura</td></tr>
-    <tr><td>Emboço</td><td class="tr">R$ 15–25/m²</td><td class="tb2">Zero</td><td class="tr">7–21 dias cura</td></tr>
-    <tr><td>Reboco</td><td class="tr">R$ 20–40/m²</td><td class="tb2">Zero</td><td class="tr">21 dias cura</td></tr>
-    <tr><td>Impermeabiliz.</td><td class="tr">R$ 10–20/m²</td><td class="tb2">Integrada ao bloco</td><td class="tr">—</td></tr>
-    <tr><td><strong>Total</strong></td><td class="tr"><strong>R$ 53–97/m²</strong></td><td class="tb2"><strong>Zero</strong></td><td class="tr"><strong>até 45 dias a menos</strong></td></tr>
-  </tbody></table></div>
-</div>
-
-<!-- ===================== PG ENCARGOS ===================== -->
-<div id="pg-encargos" class="pg">
-  <div class="hero bl"><div class="hey">Encargos Tributários</div><h1>INSS · ISS · Tempo improdutivo<br><span class="hlb">custo real da mão de obra</span></h1><p class="hero-sub">Quanto o método convencional gera a mais de INSS, ISS e tempo improdutivo comparado ao GigaSmartGlobalPro?</p></div>
-  <div class="sc bl mt12">Parâmetros</div>
-  <div class="mach mb12">
-    <div class="sr bl"><label>Área de alvenaria (m²)</label><input type="range" min="10" max="2000" step="10" value="200" id="enc-area" oninput="calcEncargos()"><span class="sv bl" id="enc-area-o">200 m²</span></div>
-    <div class="sr bl"><label>Pedreiros</label><input type="range" min="1" max="20" step="1" value="3" id="enc-nped" oninput="calcEncargos()"><span class="sv bl" id="enc-nped-o">3</span></div>
-    <div class="sr bl"><label>Diária pedreiro (R$)</label><input type="range" min="150" max="800" step="10" value="300" id="enc-ped" oninput="calcEncargos()"><span class="sv bl" id="enc-ped-o">R$300</span></div>
-    <div class="sr bl"><label>Diária ajudante (R$)</label><input type="range" min="80" max="400" step="10" value="170" id="enc-aj" oninput="calcEncargos()"><span class="sv bl" id="enc-aj-o">R$170</span></div>
-    <div class="sr bl"><label>INSS patronal (%)</label><input type="range" min="11" max="28" step="1" value="20" id="enc-inss" oninput="calcEncargos()"><span class="sv bl" id="enc-inss-o">20%</span></div>
-    <div class="sr bl"><label>ISS municipal (%)</label><input type="range" min="2" max="5" step="0.5" value="3" id="enc-iss" oninput="calcEncargos()"><span class="sv bl" id="enc-iss-o">3%</span></div>
-    <div class="sr bl"><label>Tempo improd./dia (h) — Conv.</label><input type="range" min="0" max="3" step="0.25" value="1.5" id="enc-tp" oninput="calcEncargos()"><span class="sv bl" id="enc-tp-o">1,5 h</span></div>
-    <div class="sr bl"><label>Custo energia betoneira/dia (R$)</label><input type="range" min="0" max="50" step="1" value="8" id="enc-en" oninput="calcEncargos()"><span class="sv bl" id="enc-en-o">R$8</span></div>
-  </div>
-  <div class="g3 mb12">
-    <div class="c cr">
-      <div style="font-size:11px;font-weight:700;color:var(--r);margin-bottom:8px">Convencional — Encargos</div>
-      <div class="fr-r"><span class="fr-l">Dias de obra</span><span class="fr-v r" id="enc-r1-dias">—</span></div>
-      <div class="fr-r"><span class="fr-l">Total MO pedreiros</span><span class="fr-v r" id="enc-r1-mo">—</span></div>
-      <div class="fr-r"><span class="fr-l">Total MO ajudantes</span><span class="fr-v r" id="enc-r1-aj">—</span></div>
-      <div class="fr-r"><span class="fr-l">INSS (20% sobre MO)</span><span class="fr-v r" id="enc-r1-inss">—</span></div>
-      <div class="fr-r"><span class="fr-l">ISS (3% sobre MO)</span><span class="fr-v r" id="enc-r1-iss">—</span></div>
-      <div class="fr-r"><span class="fr-l">Tempo improd. (horas)</span><span class="fr-v r" id="enc-r1-tp-h">—</span></div>
-      <div class="fr-r"><span class="fr-l">Custo tempo improd.</span><span class="fr-v r" id="enc-r1-tp-c">—</span></div>
-      <div class="fr-r"><span class="fr-l">Energia betoneira</span><span class="fr-v r" id="enc-r1-en">—</span></div>
-      <div class="fr-r tot-r" style="background:rgba(224,82,82,.06)"><span class="fr-l" style="color:var(--txt);font-weight:500">Total encargos+tempo</span><span class="fr-v r" style="font-size:13px" id="enc-r1-tot">—</span></div>
-    </div>
-    <div class="c cg">
-      <div style="font-size:11px;font-weight:700;color:var(--g);margin-bottom:8px">Global Polimérica — Encargos</div>
-      <div class="fr-r"><span class="fr-l">Dias de obra</span><span class="fr-v g" id="enc-r2-dias">—</span></div>
-      <div class="fr-r"><span class="fr-l">Total MO pedreiros</span><span class="fr-v g" id="enc-r2-mo">—</span></div>
-      <div class="fr-r"><span class="fr-l">Total MO ajudantes</span><span class="fr-v g">R$ 0,00</span></div>
-      <div class="fr-r"><span class="fr-l">INSS (sobre MO)</span><span class="fr-v g" id="enc-r2-inss">—</span></div>
-      <div class="fr-r"><span class="fr-l">ISS (sobre MO)</span><span class="fr-v g" id="enc-r2-iss">—</span></div>
-      <div class="fr-r"><span class="fr-l">Tempo improd.</span><span class="fr-v g">Zero</span></div>
-      <div class="fr-r"><span class="fr-l">Custo tempo improd.</span><span class="fr-v g">R$ 0,00</span></div>
-      <div class="fr-r"><span class="fr-l">Energia betoneira</span><span class="fr-v g">R$ 0,00</span></div>
-      <div class="fr-r tot-r"><span class="fr-l" style="color:var(--txt);font-weight:500">Total encargos</span><span class="fr-v g" style="font-size:13px" id="enc-r2-tot">—</span></div>
-    </div>
-    <div class="c cb">
-      <div style="font-size:11px;font-weight:700;color:var(--b);margin-bottom:8px">GigaSmartGlobalPro — Encargos</div>
-      <div class="fr-r"><span class="fr-l">Dias de obra</span><span class="fr-v b" id="enc-r3-dias">—</span></div>
-      <div class="fr-r"><span class="fr-l">Total MO pedreiros</span><span class="fr-v b" id="enc-r3-mo">—</span></div>
-      <div class="fr-r"><span class="fr-l">Total MO ajudantes</span><span class="fr-v b">R$ 0,00</span></div>
-      <div class="fr-r"><span class="fr-l">INSS (sobre MO)</span><span class="fr-v b" id="enc-r3-inss">—</span></div>
-      <div class="fr-r"><span class="fr-l">ISS (sobre MO)</span><span class="fr-v b" id="enc-r3-iss">—</span></div>
-      <div class="fr-r"><span class="fr-l">Tempo improd.</span><span class="fr-v b">Zero</span></div>
-      <div class="fr-r"><span class="fr-l">Custo tempo improd.</span><span class="fr-v b">R$ 0,00</span></div>
-      <div class="fr-r"><span class="fr-l">Energia betoneira</span><span class="fr-v b">R$ 0,00</span></div>
-      <div class="fr-r tot-r bl"><span class="fr-l" style="color:var(--txt);font-weight:500">Total encargos</span><span class="fr-v b" style="font-size:13px" id="enc-r3-tot">—</span></div>
-    </div>
-  </div>
-  <div class="sv-hero bl mb8">
-    <div class="sv-big bl" id="enc-econ">—</div>
-    <div class="sv-desc"><div style="font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--txt);margin-bottom:2px">economia em encargos: GigaGlobal vs Convencional</div><div style="font-size:11px;color:var(--txt2)">Só em INSS + ISS + tempo improdutivo + energia.</div></div>
-  </div>
-  <div class="tip bl mt8">INSS: alíquota patronal 20% sobre folha (Lei 8.212/91). ISS: 2–5% conforme município (LC 116/2003). Tempo improdutivo convencional: deslocamento de material, operação e espera de betoneira, estimado em 1–2h/dia por equipe. Fonte: SINAPI, Receita Federal, cronoshare.com.br.</div>
-</div>
-
-<!-- ===================== PG PRODUTIVIDADE ===================== -->
-<div id="pg-prod" class="pg">
-  <div class="hero"><div class="hey">Produtividade</div><h1>Dias de obra e equipe<br><span class="hl">por modelo de Giga Bloco</span></h1><p class="hero-sub">Compare os 4 modelos de Giga Bloco vs convencional em dias e produção diária.</p></div>
-  <div class="c cg mt12 mb12">
-    <div class="sr"><label>Área (m²)</label><input type="range" min="5" max="2000" step="5" value="200" id="p-area" oninput="calcProd()"><span class="sv" id="p-area-o">200 m²</span></div>
-    <div class="sr"><label>Pedreiros</label><input type="range" min="1" max="20" step="1" value="3" id="p-nped" oninput="calcProd()"><span class="sv" id="p-nped-o">3</span></div>
-  </div>
-  <div class="sc">Convencional vs Giga Blocos (por modelo)</div>
-  <div class="g5 mb12">
-    <div class="m mr"><div class="ml">Convencional</div><div class="mv r" id="pd-t-dias">—</div><div class="ms" id="pd-t-m2d">— m²/dia</div></div>
-    <div class="m mb"><div class="ml">GB01 (1×27×14)</div><div class="mv b" id="pd-gb01-dias">—</div><div class="ms" id="pd-gb01-m2d">— m²/dia</div></div>
-    <div class="m mb"><div class="ml">GB02 (1×36×14)</div><div class="mv b" id="pd-gb02-dias">—</div><div class="ms" id="pd-gb02-m2d">— m²/dia</div></div>
-    <div class="m mb"><div class="ml">GB03 (1×54×14)</div><div class="mv b" id="pd-gb03-dias">—</div><div class="ms" id="pd-gb03-m2d">— m²/dia</div></div>
-    <div class="m mb"><div class="ml">GB04 (1×72×14)</div><div class="mv b" id="pd-gb04-dias">—</div><div class="ms" id="pd-gb04-m2d">— m²/dia</div></div>
-  </div>
-  <div class="sc">Gráfico — dias de obra por método</div>
-  <div class="c mb12"><div class="ch" style="height:220px"><canvas id="prodChart"></canvas></div></div>
-  <div class="tip bl" id="prod-tip2">—</div>
-</div>
-
-<!-- ===================== PG FICHA ===================== -->
+<!-- =========================================================
+     PG 7 — FICHA TÉCNICA
+     ========================================================= -->
 <div id="pg-ficha" class="pg">
-  <div class="hero"><div class="hey">Ficha Técnica</div><h1>Argamassa Polimérica <span class="hl">Global</span></h1><p class="hero-sub">Dados técnicos, normas, modo de aplicação e contato oficial do fabricante.</p></div>
-  <div class="sc mt12">Dados técnicos</div>
-  <div class="fg mb12">
-    <div class="fr"><span class="fk">Rendimento médio</span><span class="fv">3,0 kg / m²</span></div>
-    <div class="fr"><span class="fk">Embalagem</span><span class="fv">Bisnaga 3 kg</span></div>
-    <div class="fr"><span class="fk">Início de cura</span><span class="fv">2 horas</span></div>
-    <div class="fr"><span class="fk">Cura total</span><span class="fv">24 a 72 horas</span></div>
-    <div class="fr"><span class="fk">Validade fechado</span><span class="fv">6 meses</span></div>
-    <div class="fr"><span class="fk">Validade aberto</span><span class="fv">7 dias</span></div>
-    <div class="fr"><span class="fk">Empilhamento máx.</span><span class="fv">3 caixas</span></div>
-    <div class="fr"><span class="fk">Ganho produtiv.</span><span class="fv">Até +60% vs conv.</span></div>
-    <div class="fr"><span class="fk">Composição</span><span class="fv">Areia, pó de brita, dolomita, polímeros</span></div>
-    <div class="fr"><span class="fk">Pavimentos</span><span class="fv">Até 3 sem análise prévia</span></div>
-  </div>
-  <div class="sc">Giga Blocos — Dimensões oficiais</div>
-  <div class="c mb12"><table class="tb"><thead><tr><th>Modelo</th><th>Dimensão (A×C×L cm)</th><th>Blocos/m²</th><th>Argamassa/bloco</th><th>Aplicação</th></tr></thead>
+  <div class="hero"><div class="hey">Ficha Técnica</div><h1>Argamassa Polimérica <span class="hl">Global</span></h1><p class="hero-sub">Dados técnicos, Giga Blocos, normas e modo de aplicação.</p></div>
+  <div class="sc mt12">Giga Blocos — Dimensões</div>
+  <div class="c mb12"><table class="tb"><thead><tr><th>Modelo</th><th>Dim. (cm)</th><th>Bl/m²</th><th>Arg./bloco</th><th>m²/h pedreiro</th><th>Uso</th></tr></thead>
   <tbody>
-    <tr><td>GB01</td><td class="tb2">1 × 27 × 14</td><td class="tg">≈ 13,3</td><td>0,23 kg</td><td>Curvas, detalhes, modulação</td></tr>
-    <tr><td>GB02</td><td class="tb2">1 × 36 × 14</td><td class="tg">≈ 10,0</td><td>0,30 kg</td><td>Uso geral, alvenaria interna</td></tr>
-    <tr><td>GB03</td><td class="tb2">1 × 54 × 14</td><td class="tg">≈ 6,6</td><td>0,45 kg</td><td>Paredes longas, maior rendimento</td></tr>
-    <tr><td>GB04</td><td class="tb2">1 × 72 × 14</td><td class="tg">≈ 5,0</td><td>0,60 kg</td><td>Máxima produtividade</td></tr>
+    <tr><td>GB01</td><td class="tb2">1×27×14</td><td class="tg">13,3</td><td>0,23 kg</td><td>1,50</td><td style="font-size:9px">Detalhes</td></tr>
+    <tr><td>GB02</td><td class="tb2">1×36×14</td><td class="tg">10,0</td><td>0,30 kg</td><td>1,73</td><td style="font-size:9px">Geral</td></tr>
+    <tr><td>GB03</td><td class="tb2">1×54×14</td><td class="tg">6,6</td><td>0,45 kg</td><td>2,03</td><td style="font-size:9px">Paredes longas</td></tr>
+    <tr><td>GB04</td><td class="tb2">1×72×14</td><td class="tg">5,0</td><td>0,60 kg</td><td>2,37</td><td style="font-size:9px">Máx. produtiv.</td></tr>
   </tbody></table></div>
-  <div class="sc">Modo de aplicação</div>
-  <div class="c mb12 gap5">
-    <div class="step"><span class="sn" style="color:var(--g)">1</span><span style="font-size:11px;color:var(--txt2)">Marcação nivelada na primeira fiada com argamassa convencional.</span></div>
-    <div class="step"><span class="sn" style="color:var(--g)">2</span><span style="font-size:11px;color:var(--txt2)">Misturar bisnaga por 5 seg e cortar no ponto demarcado.</span></div>
-    <div class="step"><span class="sn" style="color:var(--g)">3</span><span style="font-size:11px;color:var(--txt2)">Aplicar dois cordões contínuos de ≈ 1,0 cm de diâmetro.</span></div>
-    <div class="step"><span class="sn" style="color:var(--g)">4</span><span style="font-size:11px;color:var(--txt2)">Assentar os Giga Blocos pressionando firmemente. Retornar após 6 h para subir fiada.</span></div>
+  <div class="sc">Argamassa Global</div>
+  <div class="fg mb12">
+    <div class="fr"><span class="fk">Rendimento</span><span class="fv">3,0 kg/m²</span></div>
+    <div class="fr"><span class="fk">Embalagem</span><span class="fv">Bisnaga 3 kg</span></div>
+    <div class="fr"><span class="fk">Início cura</span><span class="fv">2 horas</span></div>
+    <div class="fr"><span class="fk">Cura total</span><span class="fv">24–72 horas</span></div>
+    <div class="fr"><span class="fk">Validade</span><span class="fv">6 meses (fechado)</span></div>
+    <div class="fr"><span class="fk">Contato</span><span class="fv">(62) 98206-5810</span></div>
   </div>
-  <div class="sc">Contato</div>
-  <div class="c"><div style="font-size:12px;color:var(--txt2);line-height:2">Av. Guarujá, Qd 79 – Lt 22 – Jardim Atlântico<br>Goiânia – GO, 74343-370 · <span style="color:var(--g)">(62) 98206-5810</span></div></div>
 </div>
 
 </div><!-- /mn -->
 
 <script>
-// ============ CONFIG ============
-const HDIA=8, KG_M2=3;
-// GB: [espessura A, comprimento C, altura/largura L, m²/bloco, fator_m2h_relativo]
-// Dimensão: 1cm × C × 14cm. Bloco ocupa: (C/100) × (14/100) m² de parede vertical
-// GB01: 1×27×14 → área=0.27×0.14=0.0378 → 26.5 bl/m² → mas em alvenaria real 1 bloco cobre 27cm × 14cm ≈ 0.0378m² → 26.5/m²
-// Ajustamos para valores práticos de produtividade dado peso e manuseio
+// ============ CONSTANTES ============
+const HDIA=8,KG_M2=3;
 const GB=[
-  {nome:'GB01',dim:'1×27×14 cm',C:27,L:14,bpm2:13.3,fatorProd:1.0,argKgBl:0.23},
-  {nome:'GB02',dim:'1×36×14 cm',C:36,L:14,bpm2:10.0,fatorProd:1.15,argKgBl:0.30},
-  {nome:'GB03',dim:'1×54×14 cm',C:54,L:14,bpm2:6.6, fatorProd:1.35,argKgBl:0.45},
-  {nome:'GB04',dim:'1×72×14 cm',C:72,L:14,bpm2:5.0, fatorProd:1.58,argKgBl:0.60},
+  {nome:'GB01',dim:'1×27×14 cm',bpm2:13.3,fProd:1.00,argKg:0.23},
+  {nome:'GB02',dim:'1×36×14 cm',bpm2:10.0,fProd:1.15,argKg:0.30},
+  {nome:'GB03',dim:'1×54×14 cm',bpm2:6.6, fProd:1.35,argKg:0.45},
+  {nome:'GB04',dim:'1×72×14 cm',bpm2:5.0, fProd:1.58,argKg:0.60},
 ];
-// Produtividade base Argamassa Global = 1.5 m²/h/pedreiro
-// GigaBloco GB01 ≈ 1.5 m²/h (mesma base)
-// GB02 ≈ 1.73 m²/h, GB03 ≈ 2.03 m²/h, GB04 ≈ 2.37 m²/h
-const G_M2H_BASE=1.5, T_M2H=0.93;
+const G_M2H=1.5,T_M2H=0.93;
+function gbM2h(i){return G_M2H*GB[i].fProd}
 let gbIdx=0;
-let charts={};
 
-function gbM2h(idx){return G_M2H_BASE*GB[idx].fatorProd}
-
+// ============ UTILS ============
 function brl(n){return'R$ '+Math.round(n).toLocaleString('pt-BR')}
-function brlf(n,d=2){return'R$ '+n.toFixed(d).replace('.',',').replace(/\B(?=(\d{3})+(?!\d))/g,'.')}
+function brlf(n){return'R$ '+n.toFixed(2).replace('.',',').replace(/\B(?=(\d{3})+(?!\d))/g,'.')}
 function rf(n,d=1){return Number(n).toFixed(d).replace('.',',')}
 function ri(n){return Math.round(n)}
 function qs(id){return document.getElementById(id)}
-function set(id,v){let e=qs(id);if(e)e.textContent=v}
+function set(id,v){const e=qs(id);if(e)e.textContent=v}
+
+// Estado global calculado
+let S={
+  cli:{nome:'',cidade:'',resp:'',data:''},
+  obra:{area:200,alv:150,pint:320,pd:2.8,pav:1,tipo:'residencial'},
+  blocos:{mod:0,blocos:0,cstBl:0,bis:0,kg:0,cstArg:0,matTot:0,cstM2:0,dias:0,argKgBl:0.23,bpm2:13.3},
+  mo:{diasG:0,moG:0,encG:0,totG:0,diasT:0,moT:0,ajT:0,encT:0,tpT:0,totT:0},
+  pint:{diasM:0,totM:0,m2M:0,diasE:0,totE:0,m2E:0,invTot:0,invAmort:0,insM:0,insE:0,moM:0,moE:0},
+  charts:{}
+};
 
 // ============ SIDEBAR ============
 let sOpen=true;
@@ -734,424 +840,461 @@ function tglSide(){
   }
 }
 function closeSide(){
-  sOpen=false;qs('sb').classList.remove('mob');qs('ov').classList.remove('vis');qs('hbg').classList.remove('o');
+  sOpen=false;
+  qs('sb').classList.remove('mob');qs('ov').classList.remove('vis');qs('hbg').classList.remove('o');
   if(window.innerWidth<=640){qs('sb').classList.add('hid');qs('mn').classList.add('fl')}
 }
-
 function showPg(id,el,title){
-  document.querySelectorAll('.si').forEach(i=>i.classList.remove('ac'));
+  document.querySelectorAll('.si').forEach(i=>i.classList.remove('ac','acb','acp'));
   document.querySelectorAll('.pg').forEach(p=>p.classList.remove('ac'));
-  el.classList.add('ac');
-  qs('pg-'+id).classList.add('ac');
-  qs('tbt').textContent=title;
-  if(id==='fin')calcFin();
-  if(id==='etapas')calcEtapas();
-  if(id==='encargos')calcEncargos();
-  if(id==='prod')calcProd();
+  if(el){
+    const isBlue=['blocos','mao-obra','financeiro','comparativo','ficha'].includes(id);
+    const isPurple=['pintura'].includes(id);
+    el.classList.add(isPurple?'acp':isBlue?'acb':'ac');
+  }
+  const pg=qs('pg-'+id);if(pg)pg.classList.add('ac');
+  set('tbt',title);
+  propagate();
+  if(id==='financeiro')calcFinanceiro();
   if(window.innerWidth<=640)closeSide();
 }
-
 function selGB(idx,el){
   gbIdx=idx;
   document.querySelectorAll('.gb-opt').forEach(o=>o.classList.remove('sel'));
-  el.classList.add('sel');
-  el.querySelector('input').checked=true;
-  calcMain();
+  el.classList.add('sel');el.querySelector('input').checked=true;
+  calcBlocos();
 }
 
-// ============ CALC MAIN ============
-function calcMain(){
-  const area=+qs('c-area').value,nped=+qs('c-nped').value;
-  const pd=+qs('c-pd').value,cblu=+qs('c-cblu').value,bisp=+qs('c-bis-p').value;
-  const cap=+qs('c-maq-cap').value,inv=+qs('c-maq-inv').value;
-  set('c-area-o',area+' m²');set('c-nped-o',nped);set('c-pd-o',rf(pd)+' m');
-  set('c-cblu-o','R$ '+cblu.toFixed(2).replace('.',','));set('c-bis-p-o','R$'+bisp);
-  set('c-maq-cap-o',cap);set('c-maq-inv-o','R$ '+(inv/1000).toFixed(0)+'k');
+// ============ SYNC CLIENTE ============
+function syncCliente(){
+  S.cli.nome=qs('cli-nome').value||'—';
+  S.cli.cidade=qs('cli-cidade').value||'—';
+  S.cli.resp=qs('cli-resp').value||'—';
+  S.cli.data=qs('cli-data').value||new Date().toLocaleDateString('pt-BR');
+  const chip=qs('chip-cli');
+  if(S.cli.nome!=='—'){chip.style.display='flex';set('chip-txt',S.cli.nome+' · '+S.cli.cidade)}
+  else chip.style.display='none';
+  propagate();
+}
+function syncObra(){
+  S.obra.area=+qs('ob-area').value;
+  S.obra.alv=+qs('ob-alv').value;
+  S.obra.pint=+qs('ob-pint').value;
+  S.obra.pd=+qs('ob-pd').value;
+  S.obra.pav=+qs('ob-pav').value;
+  S.obra.tipo=qs('ob-tipo').value;
+  set('ob-area-o',S.obra.area+' m²');set('ob-alv-o',S.obra.alv+' m²');
+  set('ob-pint-o',S.obra.pint+' m²');set('ob-pd-o',rf(S.obra.pd)+' m');set('ob-pav-o',S.obra.pav);
+  set('si-area',S.obra.area+' m²');set('si-alv',S.obra.alv+' m²');
+  set('si-pint',S.obra.pint+' m²');set('si-pd',rf(S.obra.pd)+' m');
+  propagate();calcBlocos();
+}
 
+// propaga dados do cliente para todos os banners
+function propagate(){
+  const nome=S.cli.nome||'—',alv=S.obra.alv+'m²',pd=rf(S.obra.pd)+'m',tipo=S.obra.tipo;
+  const cliInfo=`<strong>${nome}</strong> · ${S.cli.cidade} · ${S.obra.area}m² construídos`;
+  ['ci-blocos','ci-mo','ci-pint','ci-fin'].forEach(id=>{const e=qs(id);if(e)e.innerHTML=cliInfo});
+  // sum bars
+  set('sb-cli',nome);set('sb-alv',S.obra.alv+' m²');set('sb-pd',pd);set('sb-tipo',tipo);
+  set('smo-cli',nome);set('smo-alv',S.obra.alv+' m²');set('smo-mod',GB[gbIdx].nome);set('smo-mat',brl(S.blocos.matTot));
+  set('sp-cli',nome);set('sp-pint',S.obra.pint+' m²');set('sp-pd',pd);set('sp-mo',brl(S.mo.totG));
+  set('sf-cli',nome);set('sf-area',S.obra.area+' m²');set('sf-alv',S.obra.alv+' m²');
+  set('sf-pint',S.obra.pint+' m²');set('sf-mod',GB[gbIdx].nome);
+}
+
+// ============ ETAPA 2 — BLOCOS ============
+function calcBlocos(){
+  const alv=S.obra.alv;
   const B=GB[gbIdx];
-  const blocos=Math.ceil(area*B.bpm2);
-  const argKg=blocos*B.argKgBl;
+  const cub=+qs('bl-cub').value,bisP=+qs('bl-bis-p').value;
+  const marg=+qs('bl-marg').value/100,qual=+qs('bl-qual').value;
+  const cap=+qs('bl-maq-cap').value;
+  set('bl-cub-o','R$ '+cub.toFixed(2).replace('.',','));
+  set('bl-bis-p-o','R$ '+bisP);set('bl-marg-o',qs('bl-marg').value+'%');
+  set('bl-maq-cap-o',cap);set('bl-maq-inv-o','R$ '+(+qs('bl-maq-inv').value/1000).toFixed(0)+'k');
+
+  const blocosBrutos=alv*B.bpm2;
+  const blocos=Math.ceil(blocosBrutos*(1+marg));
+  const cstBl=blocos*cub;
+  const argKg=blocos*B.argKg*qual;
   const bis=Math.ceil(argKg/3);
-  const bcst=blocos*cblu;
-  const argCst=bis*bisp;
-
-  set('r-mod',B.nome);set('r-dim',B.dim);
-  set('r-bpm2',rf(B.bpm2));set('r-btot',blocos.toLocaleString('pt-BR'));
-  set('r-bcst',brlf(bcst));set('r-bis',bis);set('r-kg',ri(argKg)+' kg');
-  set('r-arg-cst',brlf(argCst));set('r-arg-bl',rf(B.argKgBl,2));
-
-  const gM2hEq=gbM2h(gbIdx)*nped;
-  const tM2hEq=T_M2H*nped;
-  const gDias=Math.ceil(area/(gM2hEq*HDIA));
-  const tDias=Math.ceil(area/(tM2hEq*HDIA));
-  set('r-m2h-g',rf(gM2hEq)+' m²');set('r-dias-g',gDias);set('r-dias-g-l',nped+' pedreiro(s)');
-  set('r-m2h-t',rf(tM2hEq)+' m²');set('r-dias-t',tDias);
-
-  const econ=Math.max(0,tDias-gDias);
-  const pct=tDias>0?ri(((tDias-gDias)/tDias)*100):0;
-  set('r-econ-dias',econ);set('r-pct',pct+'%');set('r-bar-lbl',pct+'% mais rápido');
-  qs('r-bar').style.width=Math.min(100,Math.max(0,pct))+'%';
-
-  qs('prod-tip').textContent=B.nome+' ('+B.dim+'): '+rf(B.bpm2)+' blocos/m² · '+rf(B.argKgBl,2)+' kg argamassa/bloco · '+rf(gbM2h(gbIdx))+' m²/h por pedreiro. Quanto maior o bloco, maior a produtividade.';
-
+  const cstArg=bis*bisP;
+  const matTot=cstBl+cstArg;
+  const cstM2=matTot/alv;
   const prodDia=cap*HDIA;
   const fabDias=Math.ceil(blocos/prodDia);
-  set('f-cap',cap);set('f-dia',prodDia);set('f-fab',fabDias);
+
+  S.blocos={mod:gbIdx,blocos,cstBl,bis,kg:ri(argKg),cstArg,matTot,cstM2,dias:fabDias,argKgBl:B.argKg,bpm2:B.bpm2};
+  set('rb-mod',B.nome);set('rb-dim',B.dim);set('rb-bpm2',rf(B.bpm2));
+  set('rb-blocos',blocos.toLocaleString('pt-BR')+' un');
+  set('rb-cst-bl',brl(cstBl));set('rb-bis',bis+' un');set('rb-kg',ri(argKg)+' kg');
+  set('rb-cst-arg',brl(cstArg));set('rb-arg-bl',rf(B.argKg,2)+' kg');
+  set('rb-fab-dias',fabDias+' dias');set('rb-mat-tot',brl(matTot));set('rb-cst-m2',brlf(cstM2));
+  qs('bl-tip').textContent=B.nome+' ('+B.dim+'): '+rf(B.bpm2)+' bl/m² · '+blocos.toLocaleString('pt-BR')+' unidades c/ '+qs('bl-marg').value+'% de margem · '+bis+' bisnagas Global · custo material total '+brl(matTot)+' ('+brlf(cstM2)+'/m²). Fabricação in loco: '+fabDias+' dia(s) à '+cap+' bl/h.';
+  propagate();calcMO();
 }
 
-// ============ CALC FIN ============
+// ============ ETAPA 3 — MÃO DE OBRA ============
+function calcMO(){
+  const alv=S.obra.alv;
+  const nPedG=+qs('mo-nped-g').value,pedD=+qs('mo-ped').value;
+  const inssP=+qs('mo-inss').value/100,issP=+qs('mo-iss').value/100;
+  const nPedT=+qs('mo-nped-t').value,nAjT=+qs('mo-naj-t').value,ajD=+qs('mo-aj').value;
+  const tp=+qs('mo-tp').value;
+  set('mo-nped-g-o',nPedG);set('mo-ped-o','R$ '+pedD);
+  set('mo-inss-o',qs('mo-inss').value+'%');set('mo-iss-o',qs('mo-iss').value+'%');
+  set('mo-nped-t-o',nPedT);set('mo-naj-t-o',nAjT);set('mo-aj-o','R$ '+ajD);set('mo-tp-o',rf(tp)+' h');
+
+  const m2hG=gbM2h(gbIdx)*nPedG;
+  const diasG=Math.ceil(alv/(m2hG*HDIA));
+  const moG=diasG*nPedG*pedD;
+  const encG=moG*(inssP+issP);
+  const totG=moG+encG;
+
+  const m2hT=T_M2H*nPedT;
+  const diasT=Math.ceil(alv/(m2hT*HDIA));
+  const moT=diasT*nPedT*pedD;
+  const ajT=diasT*nAjT*ajD;
+  const encT=(moT+ajT)*(inssP+issP);
+  const tpCst=diasT*tp*(pedD/HDIA); // custo horas improdutivas
+  const totT=moT+ajT+encT+tpCst;
+
+  S.mo={diasG,moG,encG,totG,diasT,moT,ajT,encT,tpT:tpCst,totT,inssP,issP,pedD,ajD};
+  set('rmo-g-dias',diasG+' dias');set('rmo-g-mo',brl(moG));
+  set('rmo-g-inss',brl(moG*inssP));set('rmo-g-iss',brl(moG*issP));set('rmo-g-tot',brl(totG));
+  set('rmo-t-dias',diasT+' dias');set('rmo-t-mo',brl(moT));set('rmo-t-aj',brl(ajT));
+  set('rmo-t-inss',brl((moT+ajT)*inssP));set('rmo-t-iss',brl((moT+ajT)*issP));
+  set('rmo-t-tp',brl(tpCst));set('rmo-t-tot',brl(totT));
+  set('rmo-econ-mo',brl(moT-moG));set('rmo-econ-enc',brl(encT-encG));
+  set('rmo-econ-aj',brl(ajT));set('rmo-econ-tp',brl(tpCst));
+  set('rmo-econ-dias',(diasT-diasG)+' dias');set('rmo-econ-tot',brl(totT-totG));
+  qs('mo-tip').textContent='GigaSmartGlobalPro: '+diasG+' dias de obra vs '+diasT+' do convencional. Economia de '+brl(totT-totG)+' em MO+encargos. INSS '+qs('mo-inss').value+'% + ISS '+qs('mo-iss').value+'% calculados sobre folha real de cada método.';
+  propagate();calcPintura();
+}
+
+// ============ ETAPA 4 — PINTURA ============
+let pintChart=null;
+function calcPintura(){
+  const area=S.obra.pint,pd=S.obra.pd;
+  const encP=+qs('pme-enc').value/100;
+  // Manual
+  const pmPint=+qs('pm-pint').value,pmAj=+qs('pm-aj').value;
+  const pmDpint=+qs('pm-dpint').value,pmDaj=+qs('pm-daj').value;
+  const pmProd=+qs('pm-prod').value;
+  const pmAnd=+qs('pm-and').value,pmLimp=+qs('pm-limp').value;
+  // Mecanizado
+  const pePint=+qs('pme-pint').value,peAj=+qs('pme-aj').value;
+  const peProd=+qs('pme-prod').value,peEn=+qs('pme-en').value;
+  // Insumos
+  const tintaL=+qs('ins-tinta-l').value,tintaP=+qs('ins-tinta-p').value;
+  const selL=+qs('ins-sel-l').value,selP=+qs('ins-sel-p').value;
+  const massaL=+qs('ins-massa-l').value,massaP=+qs('ins-massa-p').value;
+  const lixaQ=+qs('ins-lixa-q').value,lixaP=+qs('ins-lixa-p').value;
+  const impP=+qs('ins-imp-p').value;
+  // Investimentos
+  const invAM=+qs('inv-am').value,invAP=+qs('inv-ap').value;
+  const invLx=+qs('inv-lx').value,invBx=+qs('inv-bx').value,invCb=+qs('inv-cb').value;
+  const invObr=+qs('inv-obr').value;
+  const invTot=invAM+invAP+invLx+invBx+invCb;
+  const invAmort=invTot/invObr;
+
+  // labels
+  set('pm-pint-o',pmPint);set('pm-aj-o',pmAj);set('pm-dpint-o','R$ '+pmDpint);set('pm-daj-o','R$ '+pmDaj);
+  set('pm-prod-o',rf(pmProd));set('pm-and-o','R$ '+pmAnd);set('pm-limp-o','R$ '+pmLimp);
+  set('pme-pint-o',pePint);set('pme-aj-o',peAj);set('pme-prod-o',peProd);set('pme-en-o','R$ '+peEn);
+  set('pme-enc-o',qs('pme-enc').value+'%');
+  set('ins-tinta-l-o',rf(tintaL,2)+' L');set('ins-tinta-p-o','R$ '+tintaP);
+  set('ins-sel-l-o',rf(selL,2)+' L');set('ins-sel-p-o','R$ '+selP);
+  set('ins-massa-l-o',rf(massaL,2)+' kg');set('ins-massa-p-o','R$ '+massaP);
+  set('ins-lixa-q-o',rf(lixaQ,1));set('ins-lixa-p-o','R$ '+lixaP);set('ins-imp-p-o','R$ '+impP);
+  set('inv-am-o','R$ '+(invAM/1000).toFixed(0)+'k');set('inv-ap-o','R$ '+(invAP/1000).toFixed(0)+'k');
+  set('inv-lx-o','R$ '+invLx.toLocaleString('pt-BR'));set('inv-bx-o','R$ '+invBx.toLocaleString('pt-BR'));
+  set('inv-cb-o','R$ '+invCb.toLocaleString('pt-BR'));set('inv-obr-o',invObr+' obras');
+
+  // MANUAL
+  const mProdEq=pmProd*pmPint;
+  const mDias=Math.ceil(area/(mProdEq*HDIA));
+  const mMoP=mDias*pmPint*pmDpint,mMoAj=mDias*pmAj*pmDaj,mMoTot=mMoP+mMoAj;
+  const mEnc=mMoTot*encP;
+  const mTintaLTot=area*tintaL*1.194; // +19,4% desperdício
+  const mTintaCst=mTintaLTot*tintaP;
+  const mSelCst=area*selL*1.10*selP;
+  const mMassaCst=area*massaL*massaP;
+  const mLixaUn=Math.ceil(area/10*3); // 3 lixas manuais/10m²
+  const mLixaCst=mLixaUn*2.50; // ~R$2,50/lixa
+  const mAndCst=pd>2.5?mDias*pmAnd:0;
+  const mLimpCst=mDias*pmLimp;
+  const mImpCst=area*impP;
+  const mInsCst=mTintaCst+mSelCst+mMassaCst+mLixaCst;
+  const mTot=mMoP+mMoAj+mEnc+mInsCst+mAndCst+mLimpCst+mImpCst;
+  const mM2=mTot/area;
+
+  // MECANIZADO
+  const eDias=Math.ceil(area/(peProd*HDIA));
+  const eMoP=eDias*pePint*pmDpint,eMoAj=eDias*peAj*pmDaj,eMoTot=eMoP+eMoAj;
+  const eEnc=eMoTot*encP;
+  const eTintaLTot=area*tintaL;
+  const eTintaCst=eTintaLTot*tintaP;
+  const eSelCst=area*selL*selP;
+  const eMassaCst=area*massaL*massaP;
+  const eLixaUn=Math.ceil(area/10*lixaQ);
+  const eLixaCst=eLixaUn*lixaP;
+  const eEnCst=eDias*peEn;
+  // Impermeabilizante: com Giga Bloco não é necessário (impP=0)
+  const eImpCst=area*impP;
+  const eInsCst=eTintaCst+eSelCst+eMassaCst+eLixaCst;
+  const eTot=eMoP+eMoAj+eEnc+eInsCst+eEnCst+eImpCst+invAmort;
+  const eM2=eTot/area;
+
+  // ECONOMIAS
+  const econTot=mTot-eTot,econM2=mM2-eM2,econPct=mTot>0?ri((econTot/mTot)*100):0;
+  const econDias=mDias-eDias,econTinta=mTintaCst-eTintaCst;
+  const econMo=mMoTot-eMoTot,econAnd=mAndCst;
+  const velGanho=peProd/mProdEq;
+  const econSemAmort=mTot-(eTot-invAmort);
+  const payback=econSemAmort>0?Math.ceil(invTot/econSemAmort):'—';
+
+  // Salva estado
+  S.pint={diasM:mDias,totM:mTot,m2M:mM2,diasE:eDias,totE:eTot,m2E:eM2,invTot,invAmort,
+    insM:mInsCst,insE:eInsCst,moM:mMoTot,moE:eMoTot,encM:mEnc,encE:eEnc,andCst:mAndCst,
+    tintaM:mTintaCst,tintaE:eTintaCst};
+
+  // DISPLAY
+  set('rp-m-dias',mDias+' dias');set('rp-m-eq',(pmPint+pmAj)+' pessoas');
+  set('rp-m-mop',brl(mMoP));set('rp-m-moaj',brl(mMoAj));set('rp-m-enc',brl(mEnc));
+  set('rp-m-tinta',brl(mTintaCst));set('rp-m-massa',brl(mSelCst+mMassaCst));
+  set('rp-m-lixa',brl(mLixaCst));set('rp-m-ext',brl(mAndCst+mLimpCst));
+  set('rp-m-imp',impP>0?brl(mImpCst):'R$ 0');set('rp-m-tot',brl(mTot));set('rp-m-m2',brlf(mM2)+'/m²');
+  set('rp-e-dias',eDias+' dias');set('rp-e-eq',(pePint+peAj)+' pessoas');
+  set('rp-e-mop',brl(eMoP));set('rp-e-moaj',brl(eMoAj));set('rp-e-enc',brl(eEnc));
+  set('rp-e-tinta',brl(eTintaCst));set('rp-e-massa',brl(eSelCst+eMassaCst));
+  set('rp-e-lixa',brl(eLixaCst));set('rp-e-imp','R$ 0 (Giga Bloco)');
+  set('rp-e-equip',brl(eEnCst+invAmort));set('rp-e-tot',brl(eTot));set('rp-e-m2',brlf(eM2)+'/m²');
+  set('rp-econ-tot',brl(econTot));set('rp-econ-m2',brlf(econM2)+'/m²');
+  set('rp-econ-pct',econPct+'%');set('rp-econ-dias',econDias>0?econDias+' dias':'<1 dia');
+  set('rp-econ-tinta',brl(econTinta));set('rp-econ-mo',brl(econMo));set('rp-econ-and',brl(econAnd));
+  set('rp-vel',rf(velGanho,1)+'× mais rápido');
+  set('rp-payback',typeof payback==='number'?payback+' obras':'—');
+  qs('pt-tip').textContent='Para '+area+' m² de pintura: mecanizado conclui em '+eDias+' dia(s) vs '+mDias+' dias do manual ('+rf(velGanho,1)+'× mais rápido). Economia de '+brl(econTot)+' ('+econPct+'%) com equipe '+(pePint+peAj)+' vs '+(pmPint+pmAj)+' pessoas. Investimento de R$ '+brl(invTot)+' amortizado em '+payback+' obras.';
+  propagate();
+}
+
+// ============ ANÁLISE FINANCEIRA CONSOLIDADA ============
 let finChart=null;
-function calcFin(){
-  const area=+qs('f-area').value,nped=+qs('f-nped').value;
-  const pedD=+qs('f-ped').value,ajD=+qs('f-aj').value;
-  const inssP=+qs('f-inss').value/100,issP=+qs('f-iss').value/100;
-  const tpP=+qs('f-tp').value/100;
-  set('f-area-o',area+' m²');set('f-nped-o',nped);set('f-ped-o','R$'+pedD);set('f-aj-o','R$'+ajD);
-  set('f-inss-o',qs('f-inss').value+'%');set('f-iss-o',qs('f-iss').value+'%');set('f-tp-o',qs('f-tp').value+'%');
+function calcFinanceiro(){
+  const alv=S.obra.alv,area=S.obra.area;
+  // GIGA GLOBAL
+  const gMat=S.blocos.matTot;
+  const gMo=S.mo.totG;
+  const gPint=S.pint.totE;
+  const gTot=gMat+gMo+gPint;
+  // CONVENCIONAL (estimativas baseadas nos parâmetros)
+  const inssP=S.mo.inssP||0.20,issP=S.mo.issP||0.03;
+  // Blocos tijolo convencional: 35 bl/m² × R$90/100 un
+  const tBl=Math.ceil(alv*35/100)*90;
+  // Argamassa conv: cim+areia (~R$15/m² material)
+  const tArg=alv*15;
+  // MO conv
+  const tMo=S.mo.totT;
+  // Chapisco+reboco: R$55/m²×2 faces
+  const tReb=alv*2*55;
+  // Pintura manual
+  const tPint=S.pint.totM;
+  const tTot=tBl+tArg+tMo+tReb+tPint;
 
-  const f1bl=+qs('f1-bl').value,f1cim=+qs('f1-cim').value,f1cimq=+qs('f1-cimq').value;
-  const f1ar=+qs('f1-ar').value,f1arq=+qs('f1-arq').value,f1bet=+qs('f1-bet').value;
-  const f1en=+qs('f1-en').value,f1reb=+qs('f1-reb').value,f1imp=+qs('f1-imp').value;
-  [['f1-bl-o','R$'+f1bl],['f1-cim-o','R$'+f1cim],['f1-cimq-o',f1cimq+' sc'],['f1-ar-o','R$'+f1ar],['f1-arq-o',rf(f1arq)+' m³'],['f1-bet-o','R$'+f1bet],['f1-en-o','R$'+f1en],['f1-reb-o','R$'+f1reb],['f1-imp-o','R$'+f1imp]].forEach(([id,v])=>set(id,v));
+  const econ=tTot-gTot;
+  const econPct=tTot>0?ri((econ/tTot)*100):0;
+  const econM2=econ/area;
 
-  const f2bl=+qs('f2-bl').value,f2bis=+qs('f2-bis').value,f2reb=+qs('f2-reb').value,f2imp=+qs('f2-imp').value;
-  [['f2-bl-o','R$'+f2bl],['f2-bis-o','R$'+f2bis],['f2-reb-o','R$'+f2reb],['f2-imp-o','R$'+f2imp]].forEach(([id,v])=>set(id,v));
+  set('cf-mat',brl(gMat));set('cf-mo',brl(gMo));set('cf-pint',brl(gPint));set('cf-tot-g',brl(gTot));
+  set('cf-mat-t',brl(tBl+tArg));set('cf-mo-t',brl(tMo));set('cf-pint-t',brl(tPint));set('cf-tot-t',brl(tTot));
+  set('cf-econ',brl(econ));set('cf-pct',econPct+'%');set('cf-m2',brlf(econM2)+'/m²');
+  set('cf-bar-lbl',econPct+'% mais econômico');
+  qs('cf-bar').style.width=Math.min(98,Math.max(0,econPct))+'%';
 
-  const f3bl=+qs('f3-bl').value,f3bis=+qs('f3-bis').value,f3maq=+qs('f3-maq').value,f3obr=+qs('f3-obr').value;
-  set('f3-bl-o','R$'+f3bl);set('f3-bis-o','R$'+f3bis);set('f3-maq-o','R$ '+(f3maq/1000).toFixed(0)+'k');set('f3-obr-o',f3obr+' obras');
+  // tabela breakdown
+  set('ctb-bl-g',brl(S.blocos.cstBl));set('ctb-bl-t',brl(tBl));set('ctb-bl-e',brl(tBl-S.blocos.cstBl));
+  set('ctb-arg-g',brl(S.blocos.cstArg));set('ctb-arg-t',brl(tArg));set('ctb-arg-e',brl(tArg-S.blocos.cstArg));
+  set('ctb-mo-g',brl(S.mo.moG));set('ctb-mo-t',brl(S.mo.moT));set('ctb-mo-e',brl(S.mo.moT-S.mo.moG));
+  set('ctb-aj-t',brl(S.mo.ajT||0));set('ctb-aj-e',brl(S.mo.ajT||0));
+  set('ctb-enc-g',brl(S.mo.encG));set('ctb-enc-t',brl(S.mo.encT));set('ctb-enc-e',brl(S.mo.encT-S.mo.encG));
+  set('ctb-reb-t',brl(tReb));set('ctb-reb-e',brl(tReb));
+  set('ctb-pmo-g',brl(S.pint.moE||0));set('ctb-pmo-t',brl(S.pint.moM||0));set('ctb-pmo-e',brl((S.pint.moM||0)-(S.pint.moE||0)));
+  set('ctb-pins-g',brl(S.pint.insE||0));set('ctb-pins-t',brl(S.pint.insM||0));set('ctb-pins-e',brl((S.pint.insM||0)-(S.pint.insE||0)));
+  set('ctb-and-t',brl(S.pint.andCst||0));set('ctb-and-e',brl(S.pint.andCst||0));
+  set('ctb-maq-g',brl(S.pint.invAmort||0));
+  set('ctb-tot-g',brl(gTot));set('ctb-tot-t',brl(tTot));set('ctb-tot-e',brl(econ));
+  set('ctb-m2-g',brlf(gTot/area)+'/m²');set('ctb-m2-t',brlf(tTot/area)+'/m²');set('ctb-m2-e',brlf(econM2)+'/m²');
+  const diasG=S.mo.diasG+(S.pint.diasE||0);
+  const diasT=S.mo.diasT+(S.pint.diasM||0);
+  set('ctb-dias-g',diasG+' dias');set('ctb-dias-t',diasT+' dias');set('ctb-dias-e',(diasT-diasG)+' dias menos');
+  qs('fin-tip').textContent='Para '+area+' m² construídos ('+alv+' m² alvenaria + '+S.obra.pint+' m² pintura): GigaSmartGlobalPro custa '+brl(gTot)+' vs '+brl(tTot)+' do convencional. Economia de '+brl(econ)+' ('+econPct+'%) — '+brlf(econM2)+'/m² construído. Prazo: '+diasG+' dias vs '+diasT+' dias.';
 
-  const B=GB[gbIdx];
-
-  // M1 — Convencional
-  const m1BlocoQtd=Math.ceil(area*35);
-  const m1Bl=(m1BlocoQtd/100)*f1bl;
-  const m1Arg=f1cim*f1cimq+f1ar*f1arq;
-  const m1Dias=Math.ceil(area/(T_M2H*HDIA*nped));
-  const m1MoP=m1Dias*nped*pedD;
-  const m1AjT=m1Dias*nped*ajD;
-  const m1Bet=m1Dias*(f1bet+f1en);
-  const m1Tp=m1MoP*tpP; // custo do tempo improdutivo
-  const m1Reb=area*2*f1reb;
-  const m1Imp=area*2*f1imp;
-  const m1MoTotal=m1MoP+m1AjT;
-  const m1Enc=(m1MoTotal)*(inssP+issP);
-  const m1Tot=m1Bl+m1Arg+m1MoP+m1AjT+m1Bet+m1Tp+m1Reb+m1Imp+m1Enc;
-  set('r1-bl',brl(m1Bl));set('r1-arg',brl(m1Arg));set('r1-mo',brl(m1MoP));
-  set('r1-aj',brl(m1AjT));set('r1-bet',brl(m1Bet));set('r1-tp',brl(m1Tp));
-  set('r1-reb',brl(m1Reb));set('r1-imp',brl(m1Imp));set('r1-enc',brl(m1Enc));
-  set('r1-tot',brl(m1Tot));set('r1-m2',brlf(m1Tot/area)+'/m²');set('r1-dias',m1Dias+' dias');
-
-  // M2 — Global
-  const m2BlocoQtd=Math.ceil(area*35);
-  const m2Bl=(m2BlocoQtd/100)*f2bl;
-  const m2BisQ=Math.ceil((area*KG_M2)/3);
-  const m2Bis=m2BisQ*f2bis;
-  const m2Dias=Math.ceil(area/(G_M2H_BASE*HDIA*nped));
-  const m2MoP=m2Dias*nped*pedD;
-  const m2Reb=area*2*f2reb;
-  const m2Imp=area*2*f2imp;
-  const m2Enc=m2MoP*(inssP+issP);
-  const m2Tot=m2Bl+m2Bis+m2MoP+m2Reb+m2Imp+m2Enc;
-  set('r2-bl',brl(m2Bl));set('r2-bis',brl(m2Bis));set('r2-mo',brl(m2MoP));
-  set('r2-reb',brl(m2Reb));set('r2-imp',brl(m2Imp));set('r2-enc',brl(m2Enc));
-  set('r2-tot',brl(m2Tot));set('r2-m2',brlf(m2Tot/area)+'/m²');set('r2-dias',m2Dias+' dias');
-
-  // M3 — GigaSmartGlobalPro (usa modelo GB selecionado)
-  const m3BlocoQ=Math.ceil(area*B.bpm2);
-  const m3Bl=m3BlocoQ*f3bl;
-  const m3ArgKg=m3BlocoQ*B.argKgBl;
-  const m3BisQ=Math.ceil(m3ArgKg/3);
-  const m3Bis=m3BisQ*f3bis;
-  const m3Dias=Math.ceil(area/(gbM2h(gbIdx)*HDIA*nped));
-  const m3MoP=m3Dias*nped*pedD;
-  const m3Maq=f3maq/f3obr;
-  const m3Enc=m3MoP*(inssP+issP);
-  const m3Tot=m3Bl+m3Bis+m3MoP+m3Maq+m3Enc;
-  set('r3-bl',brl(m3Bl));set('r3-bis',brl(m3Bis));set('r3-mo',brl(m3MoP));
-  set('r3-maq',brl(m3Maq));set('r3-enc',brl(m3Enc));
-  set('r3-tot',brl(m3Tot));set('r3-m2',brlf(m3Tot/area)+'/m²');set('r3-dias',m3Dias+' dias');
-
-  const econG=m1Tot-m2Tot,econB=m1Tot-m3Tot,pG=ri((econG/m1Tot)*100),pB=ri((econB/m1Tot)*100);
-  set('fe-g',brl(econG));set('fe-g-p','−'+pG+'% do custo convencional');
-  set('fe-b',brl(econB));set('fe-b-p','−'+pB+'% do custo convencional');
-  set('fe-m2',brlf((m1Tot-m3Tot)/area)+'/m²');
-  set('fe-m2-d','Conv: '+brlf(m1Tot/area)+'/m² → GigaGlobal: '+brlf(m3Tot/area)+'/m²');
-
-  qs('fin-tip').textContent='Para '+area+' m², GigaSmartGlobalPro ('+B.nome+') economiza '+brl(econB)+' (−'+pB+'%) vs convencional. A economia inclui: eliminação de reboco/chapisco/impermeabilização, INSS e ISS sobre menos dias de obra, ausência de betoneira, ajudantes e tempo improdutivo.';
-
+  // GRÁFICO
   const ctx=qs('finChart').getContext('2d');
   if(finChart)finChart.destroy();
   finChart=new Chart(ctx,{type:'bar',
-    data:{labels:['Blocos','Argamassa','MO','Acabamento','Encargos','Extras','TOTAL'],
+    data:{labels:['Blocos/mat','Argamassa','MO pedreiros','Encargos','Acabamento','Pintura','Total'],
     datasets:[
-      {label:'Conv.',data:[m1Bl,m1Arg,m1MoP,m1Reb+m1Imp,m1Enc,m1AjT+m1Bet+m1Tp,m1Tot],backgroundColor:'rgba(224,82,82,.7)',borderColor:'#e05252',borderWidth:1,borderRadius:3},
-      {label:'Global',data:[m2Bl,m2Bis,m2MoP,m2Reb+m2Imp,m2Enc,0,m2Tot],backgroundColor:'rgba(0,197,122,.7)',borderColor:'#00C57A',borderWidth:1,borderRadius:3},
-      {label:'GigaGlobal',data:[m3Bl,m3Bis,m3MoP,0,m3Enc,m3Maq,m3Tot],backgroundColor:'rgba(74,143,245,.7)',borderColor:'#4a8ff5',borderWidth:1,borderRadius:3},
+      {label:'GigaSmartGlobalPro',data:[S.blocos.cstBl,S.blocos.cstArg,S.mo.moG,S.mo.encG,0,gPint,gTot],backgroundColor:'rgba(74,143,245,.75)',borderColor:'#4a8ff5',borderWidth:1,borderRadius:3},
+      {label:'Convencional',data:[tBl,tArg,S.mo.moT,S.mo.encT,tReb,tPint,tTot],backgroundColor:'rgba(224,82,82,.7)',borderColor:'#e05252',borderWidth:1,borderRadius:3},
     ]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#303c36',titleColor:'#a4b8ad',bodyColor:'#ecf2ee',borderColor:'rgba(74,143,245,.18)',borderWidth:1,callbacks:{label:c=>c.dataset.label+': '+brl(c.raw)}}},
-    scales:{x:{ticks:{color:'#5c7568',font:{size:9},autoSkip:false,maxRotation:25},grid:{display:false},border:{color:'rgba(255,255,255,.04)'}},
-    y:{beginAtZero:true,ticks:{color:'#5c7568',font:{size:9},callback:v=>v>=1000?'R$'+(v/1000).toFixed(0)+'k':'R$'+v},grid:{color:'rgba(255,255,255,.04)'},border:{color:'rgba(255,255,255,.04)'}}}}
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{backgroundColor:'#303c36',titleColor:'#a4b8ad',bodyColor:'#ecf2ee',borderColor:'rgba(74,143,245,.18)',borderWidth:1,callbacks:{label:c=>c.dataset.label+': '+brl(c.raw)}}},
+      scales:{x:{ticks:{color:'#5c7568',font:{size:9},autoSkip:false,maxRotation:20},grid:{display:false},border:{color:'rgba(255,255,255,.04)'}},
+      y:{beginAtZero:true,ticks:{color:'#5c7568',font:{size:9},callback:v=>v>=1000?'R$'+(v/1000).toFixed(0)+'k':'R$'+v},grid:{color:'rgba(255,255,255,.04)'},border:{color:'rgba(255,255,255,.04)'}}}}
   });
 }
 
-// ============ CALC ETAPAS ============
-function calcEtapas(){
-  const area=+qs('e-area').value,nped=+qs('e-nped').value;
-  const chap=+qs('e-chap').value,emb=+qs('e-emb').value;
-  const reb=+qs('e-reb').value,imp=+qs('e-imp').value;
-  const fret=+qs('e-fret').value,tp=+qs('e-tp').value,aj=+qs('e-aj').value;
-  set('e-area-o',area+' m²');set('e-nped-o',nped);set('e-chap-o','R$'+chap);set('e-emb-o','R$'+emb);
-  set('e-reb-o','R$'+reb);set('e-imp-o','R$'+imp);set('e-fret-o','R$ '+fret.toLocaleString('pt-BR'));
-  set('e-tp-o',rf(tp)+' h');set('e-aj-o','R$'+aj);
-
-  const tChap=area*2*chap,tEmb=area*2*emb,tReb=area*2*reb,tImp=area*2*imp;
-  // Dias convencional
-  const diasConv=Math.ceil(area/(T_M2H*HDIA*nped));
-  const tpHoras=diasConv*tp; // horas improdutivas totais
-  const tpCst=tpHoras*(aj/HDIA); // custo das horas paradas
-  const total=tChap+tEmb+tReb+tImp+fret+tpCst;
-
-  set('er-chap',brl(tChap));set('er-emb',brl(tEmb));set('er-reb',brl(tReb));set('er-imp',brl(tImp));set('er-fret',brl(fret));
-  set('er-tp',ri(tpHoras)+' h');set('er-tp-cst',brl(tpCst));
-  set('er-d-chap',Math.ceil(area*2/(8*8))+' dias');
-  set('er-d-reb',Math.ceil(area*2/(5*8))+' dias');
-  set('er-total',brl(total));set('er-m2',brlf(total/area)+'/m²');
-  const pct=Math.min(85,ri((total/(total+area*2*28))*100));
-  set('er-pct',brlf(total/area)+'/m² eliminado');
-  qs('er-bar').style.width=pct+'%';
-  qs('er-tip').textContent='Para '+area+' m² (ambas as faces), GigaSmartGlobalPro economiza '+brl(total)+' ('+brlf(total/area)+'/m²) somente nas etapas eliminadas — sem contar menor INSS, ISS e frete.';
-}
-
-// ============ CALC ENCARGOS ============
-function calcEncargos(){
-  const area=+qs('enc-area').value,nped=+qs('enc-nped').value;
-  const ped=+qs('enc-ped').value,aj=+qs('enc-aj').value;
-  const inss=+qs('enc-inss').value/100,iss=+qs('enc-iss').value/100;
-  const tp=+qs('enc-tp').value,en=+qs('enc-en').value;
-  set('enc-area-o',area+' m²');set('enc-nped-o',nped);set('enc-ped-o','R$'+ped);set('enc-aj-o','R$'+aj);
-  set('enc-inss-o',qs('enc-inss').value+'%');set('enc-iss-o',qs('enc-iss').value+'%');
-  set('enc-tp-o',rf(tp)+' h');set('enc-en-o','R$'+en);
-
-  const B=GB[gbIdx];
-  const d1=Math.ceil(area/(T_M2H*HDIA*nped));
-  const d2=Math.ceil(area/(G_M2H_BASE*HDIA*nped));
-  const d3=Math.ceil(area/(gbM2h(gbIdx)*HDIA*nped));
-
-  function calc(dias,ajudantes,energia){
-    const mo=dias*nped*ped;
-    const moAj=dias*ajudantes*aj;
-    const inssV=(mo+moAj)*inss;
-    const issV=(mo+moAj)*iss;
-    const tpH=dias*tp;
-    const tpC=tpH*(ped/HDIA);
-    const enV=dias*energia;
-    return{dias,mo,moAj,inssV,issV,tpH,tpC,enV,tot:inssV+issV+tpC+enV+moAj};
-  }
-  const r1=calc(d1,nped,en),r2=calc(d2,0,0),r3=calc(d3,0,0);
-
-  set('enc-r1-dias',d1+' dias');set('enc-r1-mo',brl(r1.mo));set('enc-r1-aj',brl(r1.moAj));
-  set('enc-r1-inss',brl(r1.inssV));set('enc-r1-iss',brl(r1.issV));
-  set('enc-r1-tp-h',ri(r1.tpH)+' h');set('enc-r1-tp-c',brl(r1.tpC));set('enc-r1-en',brl(r1.enV));
-  set('enc-r1-tot',brl(r1.tot));
-
-  set('enc-r2-dias',d2+' dias');set('enc-r2-mo',brl(r2.mo));
-  set('enc-r2-inss',brl(r2.inssV));set('enc-r2-iss',brl(r2.issV));set('enc-r2-tot',brl(r2.tot));
-
-  set('enc-r3-dias',d3+' dias');set('enc-r3-mo',brl(r3.mo));
-  set('enc-r3-inss',brl(r3.inssV));set('enc-r3-iss',brl(r3.issV));set('enc-r3-tot',brl(r3.tot));
-
-  set('enc-econ',brl(r1.tot-r3.tot));
-}
-
-// ============ CALC PROD ============
-let prodChart=null;
-function calcProd(){
-  const area=+qs('p-area').value,nped=+qs('p-nped').value;
-  set('p-area-o',area+' m²');set('p-nped-o',nped);
-  const tDias=Math.ceil(area/(T_M2H*HDIA*nped));
-  const tM2d=ri(T_M2H*HDIA*nped);
-  set('pd-t-dias',tDias+' dias');set('pd-t-m2d',tM2d+' m²/dia');
-
-  const tips=[];
-  GB.forEach((b,i)=>{
-    const m2h=gbM2h(i)*nped;
-    const dias=Math.ceil(area/(m2h*HDIA));
-    const m2d=ri(m2h*HDIA);
-    set('pd-gb0'+(i+1)+'-dias',dias+' dias');set('pd-gb0'+(i+1)+'-m2d',m2d+' m²/dia');
-    tips.push(b.nome+': '+dias+' dias');
-  });
-  qs('prod-tip2').textContent='Para '+area+' m² com '+nped+' pedreiro(s): '+[tDias+' dias (Conv.)'].concat(tips).join(' · ');
-
-  const ctx=qs('prodChart').getContext('2d');
-  if(prodChart)prodChart.destroy();
-  const labels=['Conv.',GB[0].nome,GB[1].nome,GB[2].nome,GB[3].nome];
-  const dias=[tDias,...GB.map((_,i)=>Math.ceil(area/(gbM2h(i)*nped*HDIA)))];
-  const colors=['rgba(224,82,82,.7)','rgba(74,143,245,.7)','rgba(74,143,245,.65)','rgba(74,143,245,.6)','rgba(74,143,245,.55)'];
-  prodChart=new Chart(ctx,{type:'bar',
-    data:{labels,datasets:[{label:'Dias',data:dias,backgroundColor:colors,borderColor:['#e05252','#4a8ff5','#4a8ff5','#4a8ff5','#4a8ff5'],borderWidth:1,borderRadius:4}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#303c36',titleColor:'#a4b8ad',bodyColor:'#ecf2ee',borderWidth:0}},
-    scales:{x:{ticks:{color:'#5c7568',font:{size:10}},grid:{display:false},border:{color:'rgba(255,255,255,.04)'}},
-    y:{beginAtZero:true,ticks:{color:'#5c7568',font:{size:10}},grid:{color:'rgba(255,255,255,.04)'},border:{color:'rgba(255,255,255,.04)'}}}}
-  });
-}
-
-// ============ PDF ============
+// ============ PDF UNIFICADO ============
 function openPdf(){
-  qs('pdf-data').value=new Date().toLocaleDateString('pt-BR');
+  if(!qs('pdf-resp').value&&S.cli.resp!=='—')qs('pdf-resp').value=S.cli.resp;
   qs('pdf-ov').classList.add('vis');
 }
 function closePdf(){qs('pdf-ov').classList.remove('vis')}
-
 function gerarPDF(){
-  const cli=qs('pdf-cliente').value||'—';
-  const cid=qs('pdf-cidade').value||'—';
-  const resp=qs('pdf-resp').value||'—';
-  const data=qs('pdf-data').value||new Date().toLocaleDateString('pt-BR');
-
-  // Coleta dados calculados
-  const area=+qs('f-area').value||+qs('c-area').value||200;
+  calcFinanceiro();
+  const obs=qs('pdf-obs').value||'';
+  const resp=qs('pdf-resp').value||S.cli.resp||'—';
   const B=GB[gbIdx];
+  const tBl_=Math.ceil(S.obra.alv*35/100)*90;
+  const tArg_=S.obra.alv*15;
+  const tReb_=S.obra.alv*2*55;
+  const tMo_=S.mo.totT||0;
+  const tPint_=S.pint.totM||0;
+  const tTot_=tBl_+tArg_+tMo_+tReb_+tPint_;
+  const gTot_=(S.blocos.matTot||0)+(S.mo.totG||0)+(S.pint.totE||0);
+  const econ_=tTot_-gTot_;
+  const econPct_=tTot_>0?ri((econ_/tTot_)*100):0;
 
   const w=window.open('','_blank');
   w.document.write(`<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8">
-<title>GigaSmartGlobalPro — Proposta</title>
+<title>GigaSmartGlobalPro — ${S.cli.nome}</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Segoe UI',Arial,sans-serif;color:#1a2420;font-size:11px;line-height:1.5;background:#fff}
-.capa{background:linear-gradient(135deg,#1a2420 0%,#0d4a35 100%);color:#ecf2ee;padding:40px 36px;min-height:200px}
-.logo{font-size:22px;font-weight:900;color:#00C57A;letter-spacing:.04em;margin-bottom:6px}
-.sub-logo{font-size:11px;color:#5c9e7e;margin-bottom:20px}
-.prop-title{font-size:18px;font-weight:700;color:#fff;margin-bottom:4px}
-.prop-sub{font-size:11px;color:#8fc4ae}
-.info-bar{background:#00C57A;color:#000;padding:8px 36px;display:flex;gap:40px;font-size:10px;font-weight:600}
-.sec{padding:20px 36px 0}
-.sec-title{font-size:10px;font-weight:700;color:#00916B;text-transform:uppercase;letter-spacing:.12em;border-bottom:1px solid #e0efe8;padding-bottom:4px;margin-bottom:10px}
-.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
-.box{background:#f4faf7;border:1px solid #d0ead8;border-radius:8px;padding:10px 12px}
-.box-title{font-size:9px;color:#5c7568;text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
-.box-val{font-size:18px;font-weight:800;color:#00916B}
-.box-val.r{color:#c0392b}.box-val.b{color:#2c5fa0}.box-val.w{color:#d68910}
-.box-sub{font-size:9px;color:#888;margin-top:2px}
-.tb{width:100%;border-collapse:collapse;margin-bottom:12px;font-size:10px}
-.tb th{background:#1a2420;color:#00C57A;padding:5px 7px;text-align:left;font-size:9px;text-transform:uppercase;letter-spacing:.06em}
-.tb td{padding:5px 7px;border-bottom:1px solid #e8f2ec;vertical-align:middle}
-.tb tr:nth-child(even) td{background:#f8fcfa}
-.g{color:#00916B;font-weight:600}.b2{color:#2c5fa0;font-weight:600}.r{color:#c0392b}
-.badge{display:inline-block;padding:1px 6px;border-radius:8px;font-size:9px;font-weight:700}
-.bg{background:#d4f7ea;color:#00916B}.bb{background:#d6e8fc;color:#2c5fa0}.br{background:#fce8e8;color:#c0392b}
-.destaque{background:linear-gradient(135deg,#d4f7ea,#eafcf4);border:1px solid #00C57A;border-radius:10px;padding:14px 16px;margin-bottom:12px;display:flex;align-items:center;gap:20px}
-.dest-num{font-size:32px;font-weight:900;color:#00916B;line-height:1}
-.dest-txt{flex:1}
-.dest-lbl{font-size:13px;font-weight:700;color:#1a2420;margin-bottom:2px}
-.dest-sub{font-size:10px;color:#5c7568}
-.footer{background:#0d4a35;color:#8fc4ae;padding:12px 36px;font-size:9px;display:flex;justify-content:space-between;align-items:center;margin-top:20px}
-.aviso{background:#fff8e8;border:1px solid #f5d78e;border-radius:6px;padding:8px 12px;font-size:9px;color:#7a5c00;margin:10px 36px;line-height:1.4}
-@media print{body{margin:0}.footer{position:fixed;bottom:0;left:0;right:0}}
+.capa{background:linear-gradient(135deg,#1a2420,#0d4a35);color:#ecf2ee;padding:36px;min-height:180px}
+.logo{font-size:20px;font-weight:900;color:#00C57A;letter-spacing:.04em;margin-bottom:4px}
+.sublogo{font-size:10px;color:#5c9e7e;margin-bottom:18px}
+.ptitle{font-size:17px;font-weight:700;color:#fff;margin-bottom:3px}
+.psub{font-size:10px;color:#8fc4ae}
+.info-bar{background:#00C57A;color:#000;padding:7px 36px;display:flex;gap:30px;font-size:10px;font-weight:600;flex-wrap:wrap}
+.sec{padding:16px 36px 0}
+.sc{font-size:10px;font-weight:700;color:#00916B;text-transform:uppercase;letter-spacing:.12em;border-bottom:1px solid #e0efe8;padding-bottom:3px;margin-bottom:9px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.box{background:#f4faf7;border:1px solid #d0ead8;border-radius:7px;padding:8px 10px}
+.boxb{background:#edf3fc;border:1px solid #c5d8f5;border-radius:7px;padding:8px 10px}
+.boxp{background:#f6f0ff;border:1px solid #d8bfff;border-radius:7px;padding:8px 10px}
+.boxr{background:#fdf0f0;border:1px solid #f5c0c0;border-radius:7px;padding:8px 10px}
+.bx-lbl{font-size:9px;color:#5c7568;text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px}
+.bx-val{font-size:15px;font-weight:800;color:#00916B}
+.bx-val.b{color:#2c5fa0}.bx-val.p{color:#7c3aed}.bx-val.r{color:#c0392b}.bx-val.w{color:#b7770d}
+.bx-sub{font-size:9px;color:#888;margin-top:1px}
+.tbl{width:100%;border-collapse:collapse;margin-bottom:12px;font-size:10px}
+.tbl th{background:#1a2420;color:#00C57A;padding:4px 7px;text-align:left;font-size:9px;text-transform:uppercase}
+.tbl td{padding:4px 7px;border-bottom:1px solid #e8f2ec;vertical-align:top}
+.tbl tr:nth-child(even) td{background:#f8fcfa}
+.g_{color:#00916B;font-weight:600}.b_{color:#2c5fa0;font-weight:600}.r_{color:#c0392b}.p_{color:#7c3aed;font-weight:600}
+.destaque{background:linear-gradient(135deg,#d4f7ea,#eafcf4);border:1px solid #00C57A;border-radius:10px;padding:12px 16px;margin-bottom:12px;display:flex;align-items:center;gap:16px}
+.dest-n{font-size:28px;font-weight:900;color:#00916B;line-height:1}
+.dest-tx .dest-l{font-size:12px;font-weight:700;color:#1a2420;margin-bottom:2px}
+.dest-tx .dest-s{font-size:10px;color:#5c7568}
+.aviso{background:#fff8e8;border:1px solid #f5d78e;border-radius:6px;padding:7px 12px;font-size:9px;color:#7a5c00;margin:10px 36px;line-height:1.4}
+.footer{background:#0d4a35;color:#8fc4ae;padding:10px 36px;font-size:9px;display:flex;justify-content:space-between;align-items:center;margin-top:16px}
+@media print{body{margin:0}}
 </style></head><body>
-
 <div class="capa">
   <div class="logo">GigaSmartGlobalPro™</div>
-  <div class="sub-logo">Sistema Construtivo Avançado · Argamassa Polimérica Global + Giga Bloco</div>
-  <div class="prop-title">Proposta de Viabilidade Financeira, Econômica e Temporal</div>
-  <div class="prop-sub">${cli} · ${cid} · ${data}</div>
+  <div class="sublogo">Sistema Construtivo Avançado · Argamassa Polimérica Global + Giga Bloco + Pintura Mecanizada</div>
+  <div class="ptitle">Proposta de Viabilidade Financeira, Econômica e Temporal</div>
+  <div class="psub">${S.cli.nome||'—'} · ${S.cli.cidade||'—'} · ${S.cli.data||new Date().toLocaleDateString('pt-BR')}</div>
 </div>
-
 <div class="info-bar">
-  <span>📋 Responsável: ${resp}</span>
-  <span>📍 Local: ${cid}</span>
-  <span>📐 Área: ${area} m²</span>
-  <span>🧱 Giga Bloco: ${B.nome} (${B.dim})</span>
+  <span>👤 Cliente: ${S.cli.nome||'—'}</span>
+  <span>📍 ${S.cli.cidade||'—'}</span>
+  <span>📐 Área: ${S.obra.area} m² construídos</span>
+  <span>🧱 ${B.nome} (${B.dim})</span>
+  <span>🔧 Resp.: ${resp}</span>
+  ${obs?`<span>📝 ${obs}</span>`:''}
 </div>
 
 <div class="sec">
-  <div class="sec-title" style="margin-top:14px">Resumo executivo — por que GigaSmartGlobalPro?</div>
-  <div class="grid3">
-    <div class="box"><div class="box-title">Blocos necessários</div><div class="box-val b">${ri(area*B.bpm2).toLocaleString('pt-BR')}</div><div class="box-sub">${B.nome} · ${rf(B.bpm2)} bl/m²</div></div>
-    <div class="box"><div class="box-title">Bisnagas Argamassa Global</div><div class="box-val g">${Math.ceil(area*B.bpm2*B.argKgBl/3)}</div><div class="box-sub">${rf(B.argKgBl,2)} kg/bloco · 3 kg/bisnaga</div></div>
-    <div class="box"><div class="box-title">Modelo selecionado</div><div class="box-val b">${B.nome}</div><div class="box-sub">${B.dim} · ${rf(gbM2h(gbIdx))} m²/h/pedreiro</div></div>
+  <div class="sc" style="margin-top:14px">Dados gerais da obra</div>
+  <div class="g4">
+    <div class="box"><div class="bx-lbl">Área construída</div><div class="bx-val">${S.obra.area} m²</div></div>
+    <div class="box"><div class="bx-lbl">Área alvenaria</div><div class="bx-val b">${S.obra.alv} m²</div></div>
+    <div class="box"><div class="bx-lbl">Área pintura</div><div class="bx-val p">${S.obra.pint} m²</div></div>
+    <div class="box"><div class="bx-lbl">Pé-direito / Pavimentos</div><div class="bx-val">${rf(S.obra.pd)} m / ${S.obra.pav} pav.</div></div>
   </div>
 </div>
 
 <div class="sec">
-  <div class="sec-title">Comparativo financeiro — ${area} m² de alvenaria</div>
-  <table class="tb">
-    <thead><tr><th>Item de custo</th><th>Convencional</th><th>Global Polimérica</th><th>GigaSmartGlobalPro</th></tr></thead>
-    <tbody>
-      <tr><td>Blocos / Tijolos</td><td class="r">${qs('r1-bl')?.textContent||'—'}</td><td class="g">${qs('r2-bl')?.textContent||'—'}</td><td class="b2">${qs('r3-bl')?.textContent||'—'}</td></tr>
-      <tr><td>Argamassa</td><td class="r">${qs('r1-arg')?.textContent||'—'}</td><td class="g">${qs('r2-bis')?.textContent||'—'}</td><td class="b2">${qs('r3-bis')?.textContent||'—'}</td></tr>
-      <tr><td>Mão de obra</td><td class="r">${qs('r1-mo')?.textContent||'—'}</td><td class="g">${qs('r2-mo')?.textContent||'—'}</td><td class="b2">${qs('r3-mo')?.textContent||'—'}</td></tr>
-      <tr><td>Ajudantes</td><td class="r">${qs('r1-aj')?.textContent||'—'}</td><td class="g">R$ 0,00</td><td class="b2">R$ 0,00</td></tr>
-      <tr><td>Betoneira + energia</td><td class="r">${qs('r1-bet')?.textContent||'—'}</td><td class="g">R$ 0,00</td><td class="b2">R$ 0,00</td></tr>
-      <tr><td>Tempo improdutivo</td><td class="r">${qs('r1-tp')?.textContent||'—'}</td><td class="g">R$ 0,00</td><td class="b2">R$ 0,00</td></tr>
-      <tr><td>Chapisco + Emboço + Reboco</td><td class="r">${qs('r1-reb')?.textContent||'—'}</td><td class="g">${qs('r2-reb')?.textContent||'—'}</td><td class="b2"><span class="badge bb">✓ ELIMINADO</span></td></tr>
-      <tr><td>Impermeabilização</td><td class="r">${qs('r1-imp')?.textContent||'—'}</td><td class="g">${qs('r2-imp')?.textContent||'—'}</td><td class="b2"><span class="badge bb">✓ ELIMINADO</span></td></tr>
-      <tr><td>INSS + ISS sobre MO</td><td class="r">${qs('r1-enc')?.textContent||'—'}</td><td class="g">${qs('r2-enc')?.textContent||'—'}</td><td class="b2">${qs('r3-enc')?.textContent||'—'}</td></tr>
-      <tr style="font-weight:700"><td><strong>TOTAL DA OBRA</strong></td><td class="r"><strong>${qs('r1-tot')?.textContent||'—'}</strong></td><td class="g"><strong>${qs('r2-tot')?.textContent||'—'}</strong></td><td class="b2"><strong>${qs('r3-tot')?.textContent||'—'}</strong></td></tr>
-      <tr><td><strong>Custo por m²</strong></td><td class="r"><strong>${qs('r1-m2')?.textContent||'—'}</strong></td><td class="g"><strong>${qs('r2-m2')?.textContent||'—'}</strong></td><td class="b2"><strong>${qs('r3-m2')?.textContent||'—'}</strong></td></tr>
-      <tr><td>Dias de obra</td><td class="r">${qs('r1-dias')?.textContent||'—'}</td><td class="g">${qs('r2-dias')?.textContent||'—'}</td><td class="b2">${qs('r3-dias')?.textContent||'—'}</td></tr>
-    </tbody>
-  </table>
+  <div class="sc">Etapa 2 — Blocos e Argamassa Global (${B.nome})</div>
+  <div class="g4">
+    <div class="boxb"><div class="bx-lbl">Modelo</div><div class="bx-val b">${B.nome}</div><div class="bx-sub">${B.dim}</div></div>
+    <div class="boxb"><div class="bx-lbl">Blocos (c/ margem)</div><div class="bx-val b">${(S.blocos.blocos||0).toLocaleString('pt-BR')}</div><div class="bx-sub">${rf(S.blocos.bpm2)} bl/m²</div></div>
+    <div class="box"><div class="bx-lbl">Bisnagas Argamassa</div><div class="bx-val g_">${S.blocos.bis||0}</div><div class="bx-sub">${rf(S.blocos.argKgBl,2)} kg/bloco</div></div>
+    <div class="box"><div class="bx-lbl">Custo total material</div><div class="bx-val g_">${brl(S.blocos.matTot)}</div><div class="bx-sub">${brlf(S.blocos.cstM2)}/m²</div></div>
+  </div>
 </div>
 
 <div class="sec">
-  <div class="sec-title">Economia GigaSmartGlobalPro vs Convencional</div>
+  <div class="sc">Etapa 3 — Mão de Obra + Encargos</div>
+  <table class="tbl"><thead><tr><th>Item</th><th>GigaSmartGlobalPro</th><th>Convencional</th><th>Economia</th></tr></thead>
+  <tbody>
+    <tr><td>Dias de obra (alvenaria)</td><td class="b_">${S.mo.diasG} dias</td><td class="r_">${S.mo.diasT} dias</td><td class="g_">${(S.mo.diasT||0)-(S.mo.diasG||0)} dias</td></tr>
+    <tr><td>MO Pedreiros</td><td class="b_">${brl(S.mo.moG)}</td><td class="r_">${brl(S.mo.moT)}</td><td class="g_">${brl((S.mo.moT||0)-(S.mo.moG||0))}</td></tr>
+    <tr><td>Ajudantes</td><td class="b_">R$ 0,00</td><td class="r_">${brl(S.mo.ajT||0)}</td><td class="g_">${brl(S.mo.ajT||0)}</td></tr>
+    <tr><td>INSS + ISS</td><td class="b_">${brl(S.mo.encG)}</td><td class="r_">${brl(S.mo.encT)}</td><td class="g_">${brl((S.mo.encT||0)-(S.mo.encG||0))}</td></tr>
+    <tr><td>Tempo improdutivo (betoneira)</td><td class="b_">Zero</td><td class="r_">${brl(S.mo.tpT||0)}</td><td class="g_">${brl(S.mo.tpT||0)}</td></tr>
+    <tr style="font-weight:700"><td><b>Total MO + Encargos</b></td><td class="b_"><b>${brl(S.mo.totG)}</b></td><td class="r_"><b>${brl(S.mo.totT)}</b></td><td class="g_"><b>${brl((S.mo.totT||0)-(S.mo.totG||0))}</b></td></tr>
+  </tbody></table>
+</div>
+
+<div class="sec">
+  <div class="sc">Etapa 4 — Pintura Mecanizada vs Manual</div>
+  <table class="tbl"><thead><tr><th>Item</th><th>Mecanizado (Airless)</th><th>Manual (rolo)</th><th>Economia</th></tr></thead>
+  <tbody>
+    <tr><td>Dias de obra</td><td class="p_">${S.pint.diasE} dias</td><td class="r_">${S.pint.diasM} dias</td><td class="g_">${(S.pint.diasM||0)-(S.pint.diasE||0)} dias</td></tr>
+    <tr><td>MO pintores</td><td class="p_">${brl(S.pint.moE||0)}</td><td class="r_">${brl(S.pint.moM||0)}</td><td class="g_">${brl((S.pint.moM||0)-(S.pint.moE||0))}</td></tr>
+    <tr><td>Insumos (tinta+massa+selador)</td><td class="p_">${brl(S.pint.insE||0)}</td><td class="r_">${brl(S.pint.insM||0)}</td><td class="g_">${brl((S.pint.insM||0)-(S.pint.insE||0))}</td></tr>
+    <tr><td>Andaime</td><td class="p_">R$ 0,00 ✓</td><td class="r_">${brl(S.pint.andCst||0)}</td><td class="g_">${brl(S.pint.andCst||0)}</td></tr>
+    <tr><td>Amortização equipamentos</td><td class="p_">${brl(S.pint.invAmort||0)}</td><td class="r_">—</td><td class="g_">incluso</td></tr>
+    <tr style="font-weight:700"><td><b>Total Pintura</b></td><td class="p_"><b>${brl(S.pint.totE)}</b></td><td class="r_"><b>${brl(S.pint.totM)}</b></td><td class="g_"><b>${brl((S.pint.totM||0)-(S.pint.totE||0))}</b></td></tr>
+    <tr><td>Custo/m²</td><td class="p_">${brlf(S.pint.m2E)}/m²</td><td class="r_">${brlf(S.pint.m2M)}/m²</td><td class="g_">—</td></tr>
+  </tbody></table>
+</div>
+
+<div class="sec">
+  <div class="sc">Análise Financeira Consolidada — Toda a Obra</div>
   <div class="destaque">
-    <div class="dest-num">${qs('fe-b')?.textContent||'—'}</div>
-    <div class="dest-txt">
-      <div class="dest-lbl">economia total na obra</div>
-      <div class="dest-sub">${qs('fe-b-p')?.textContent||''} · ${qs('fe-m2')?.textContent||''} por m²</div>
+    <div class="dest-n">${brl(econ_)}</div>
+    <div class="dest-tx">
+      <div class="dest-l">ECONOMIA TOTAL — GigaSmartGlobalPro vs Convencional</div>
+      <div class="dest-s">Redução de ${econPct_}% no custo total · ${brlf(econ_/S.obra.area)}/m² construído · GigaSmartGlobalPro: ${brl(gTot_)} · Convencional: ${brl(tTot_)}</div>
     </div>
   </div>
+  <table class="tbl"><thead><tr><th>Composição</th><th>GigaSmartGlobalPro</th><th>Convencional</th><th>Economia</th></tr></thead>
+  <tbody>
+    <tr><td>Blocos / Tijolos</td><td class="b_">${brl(S.blocos.cstBl)}</td><td class="r_">${brl(tBl_)}</td><td class="g_">${brl(tBl_-S.blocos.cstBl)}</td></tr>
+    <tr><td>Argamassa</td><td class="b_">${brl(S.blocos.cstArg)}</td><td class="r_">${brl(tArg_)}</td><td class="g_">${brl(tArg_-S.blocos.cstArg)}</td></tr>
+    <tr><td>MO pedreiros + encargos</td><td class="b_">${brl(S.mo.totG)}</td><td class="r_">${brl(S.mo.totT)}</td><td class="g_">${brl((S.mo.totT||0)-(S.mo.totG||0))}</td></tr>
+    <tr><td>Chapisco + Reboco (alv.)</td><td class="b_">✓ ELIMINADO</td><td class="r_">${brl(tReb_)}</td><td class="g_">${brl(tReb_)}</td></tr>
+    <tr><td>Pintura completa</td><td class="b_">${brl(S.pint.totE)}</td><td class="r_">${brl(tPint_)}</td><td class="g_">${brl(tPint_-S.pint.totE)}</td></tr>
+    <tr style="font-weight:700;background:#e8f8f2"><td><b>TOTAL GERAL</b></td><td class="b_" style="font-size:12px"><b>${brl(gTot_)}</b></td><td class="r_" style="font-size:12px"><b>${brl(tTot_)}</b></td><td class="g_" style="font-size:12px"><b>${brl(econ_)}</b></td></tr>
+    <tr><td>Custo/m² construído</td><td class="b_">${brlf(gTot_/S.obra.area)}/m²</td><td class="r_">${brlf(tTot_/S.obra.area)}/m²</td><td class="g_">${brlf(econ_/S.obra.area)}/m²</td></tr>
+  </tbody></table>
 </div>
 
-<div class="sec">
-  <div class="sec-title">Etapas eliminadas pelo GigaSmartGlobalPro</div>
-  <table class="tb">
-    <thead><tr><th>Etapa eliminada</th><th>Custo médio/m²</th><th>Com GigaSmartGlobalPro</th><th>Prazo de cura eliminado</th></tr></thead>
-    <tbody>
-      <tr><td>Chapisco</td><td class="r">R$ 8–12/m²</td><td class="b2"><span class="badge bb">Zero</span></td><td class="r">3 dias</td></tr>
-      <tr><td>Emboço</td><td class="r">R$ 15–25/m²</td><td class="b2"><span class="badge bb">Zero</span></td><td class="r">7–21 dias</td></tr>
-      <tr><td>Reboco</td><td class="r">R$ 20–40/m²</td><td class="b2"><span class="badge bb">Zero</span></td><td class="r">21 dias</td></tr>
-      <tr><td>Impermeabilização</td><td class="r">R$ 10–20/m²</td><td class="b2"><span class="badge bb">Integrada ao bloco</span></td><td class="r">—</td></tr>
-      <tr><td>Frete de blocos</td><td class="r">Variável</td><td class="b2"><span class="badge bb">Fabricado in loco</span></td><td class="r">—</td></tr>
-      <tr style="font-weight:700"><td><strong>Total das etapas</strong></td><td class="r"><strong>R$ 53–97/m²</strong></td><td class="b2"><strong>Zero</strong></td><td class="r"><strong>até 45 dias</strong></td></tr>
-    </tbody>
-  </table>
-</div>
-
-<div class="sec">
-  <div class="sec-title">Giga Blocos — Dimensões e produtividade</div>
-  <table class="tb">
-    <thead><tr><th>Modelo</th><th>Dimensão (cm)</th><th>Blocos/m²</th><th>Arg./bloco</th><th>m²/h pedreiro</th><th>Aplicação</th></tr></thead>
-    <tbody>
-      ${GB.map((b,i)=>`<tr${i===gbIdx?' style="background:#d6e8fc"':''}><td${i===gbIdx?' class="b2"':''}><strong>${b.nome}${i===gbIdx?' ★':''}</strong></td><td>${b.dim}</td><td class="${i===gbIdx?'b2':'g'}">${rf(b.bpm2)}</td><td>${rf(b.argKgBl,2)} kg</td><td>${rf(gbM2h(i))}</td><td style="font-size:9px;color:#666">${['Curvas e detalhes','Uso geral, interno','Paredes longas','Máx. produtividade'][i]}</td></tr>`).join('')}
-    </tbody>
-  </table>
-</div>
-
-<div class="sec">
-  <div class="sec-title">Encargos tributários — impacto real na obra</div>
-  <table class="tb">
-    <thead><tr><th>Encargo</th><th>Convencional</th><th>Global Polimérica</th><th>GigaSmartGlobalPro</th><th>Base legal</th></tr></thead>
-    <tbody>
-      <tr><td>INSS patronal</td><td class="r">20% sobre MO (mais dias)</td><td class="g">20% sobre MO (menos dias)</td><td class="b2">20% sobre MO (mínimo)</td><td style="font-size:9px">Lei 8.212/91</td></tr>
-      <tr><td>ISS municipal</td><td class="r">2–5% sobre serviço</td><td class="g">2–5% (menos dias)</td><td class="b2">2–5% (mínimo)</td><td style="font-size:9px">LC 116/2003</td></tr>
-      <tr><td>Tempo improdutivo</td><td class="r">1–2 h/dia (betoneira)</td><td class="g">Zero</td><td class="b2">Zero</td><td style="font-size:9px">Custo oculto</td></tr>
-      <tr><td>Energia betoneira</td><td class="r">R$ 6–12/dia</td><td class="g">Zero</td><td class="b2">Zero</td><td style="font-size:9px">Custo direto</td></tr>
-    </tbody>
-  </table>
-</div>
-
-<div class="aviso">⚠ Esta proposta tem caráter orientativo. Os valores apresentados são estimativas baseadas em parâmetros configurados pelo usuário e referências SINAPI/TCPO 2025. Para orçamento definitivo, consulte um engenheiro civil responsável. INSS e ISS devem ser verificados com contador especializado em construção civil. Argamassa Global: (62) 98206-5810 · Goiânia-GO.</div>
-
+<div class="aviso">⚠ Proposta orientativa baseada nos parâmetros informados. Valores de INSS (Lei 8.212/91), ISS (LC 116/2003), produtividade (CONIC-SEMESP/SINAPI 2025) e rendimentos (Ficha Técnica Argamassa Global). Para contratação, consulte engenheiro civil responsável. Global: (62) 98206-5810 · Goiânia-GO.</div>
 <div class="footer">
-  <span>GigaSmartGlobalPro™ · Argamassa Polimérica Global + Giga Bloco · ${data}</span>
-  <span>Responsável: ${resp} · ${cid}</span>
-  <button onclick="window.print()" style="background:#00C57A;color:#000;border:none;padding:5px 14px;border-radius:6px;font-weight:700;cursor:pointer;font-size:10px">🖨 Imprimir / Salvar PDF</button>
+  <span>GigaSmartGlobalPro™ · ${S.cli.nome||'—'} · ${S.cli.data||new Date().toLocaleDateString('pt-BR')}</span>
+  <span>Resp.: ${resp}</span>
+  <button onclick="window.print()" style="background:#00C57A;color:#000;border:none;padding:4px 12px;border-radius:5px;font-weight:700;cursor:pointer;font-size:10px">🖨 Imprimir PDF</button>
 </div>
-
-<script>window.onload=()=>{setTimeout(()=>window.print(),800)}<\/script>
+<script>window.onload=()=>{setTimeout(()=>window.print(),700)}<\/script>
 </body></html>`);
   w.document.close();
   closePdf();
@@ -1159,7 +1302,9 @@ body{font-family:'Segoe UI',Arial,sans-serif;color:#1a2420;font-size:11px;line-h
 
 // ============ INIT ============
 (function(){
-  calcMain();calcFin();calcEtapas();calcEncargos();calcProd();
+  qs('cli-data').value=new Date().toLocaleDateString('pt-BR');
+  S.cli.data=qs('cli-data').value;
+  syncObra();calcBlocos();calcMO();calcPintura();
   if(window.innerWidth<=640){sOpen=false;qs('sb').classList.add('hid');qs('mn').classList.add('fl')}
 })();
 </script>
